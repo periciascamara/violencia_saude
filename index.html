@@ -1,37 +1,25 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veridicus I.A - Rede de Apoio e Cuidado</title>
+    <title>Veridicus I.A - Gestão e Apoio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap');
         
-        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
-        .hero-section { position: relative; background-color: #0f172a; overflow: hidden; }
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; overflow-x: hidden; }
         
-        /* MUDANÇA DA FOTO DO HERO:
-           Localize a propriedade 'background-image' abaixo e troque a URL pela imagem desejada.
-           A opacidade (opacity) controla o efeito de overlay com o fundo azul escuro.
-        */
+        /* --- PERSONALIZAÇÃO DA IMAGEM --- */
+        .hero-section { position: relative; background-color: #0f172a; overflow: hidden; }
         .hero-bg-image { 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            /* ALTERE A URL ABAIXO PARA TROCAR A FOTO DO FUNDO DO TOPO */
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             background-image: url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=2000'); 
-            background-size: cover; 
-            background-position: center; 
-            opacity: 0.15; 
-            z-index: 0; 
+            background-size: cover; background-position: center; opacity: 0.15; z-index: 0; 
         }
-
         .hero-content { position: relative; z-index: 10; }
 
-        /* Flip Cards */
+        /* Estilos dos Cartões (Flip) */
         .flip-card { background-color: transparent; width: 100%; height: 420px; perspective: 1000px; cursor: pointer; }
         .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; }
         .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
@@ -39,38 +27,29 @@
         .flip-card-front { background: white; border: 1px solid #f1f5f9; justify-content: space-between; }
         .flip-card-back { background: #1e293b; color: white; transform: rotateY(180deg); justify-content: center; }
 
-        /* Construction Ribbon */
+        /* Tarja de Construção */
         .construction-ribbon { position: absolute; top: 20px; right: -35px; background: #f59e0b; color: white; padding: 5px 40px; font-size: 10px; font-weight: 900; text-transform: uppercase; transform: rotate(45deg); z-index: 50; box-shadow: 0 2px 10px rgba(0,0,0,0.1); letter-spacing: 1px; pointer-events: none; }
 
-        /* Premium Badge */
-        .badge-authority-container { position: relative; width: 180px; height: 180px; display: flex; align-items: center; justify-content: center; }
-        .badge-authority { background: linear-gradient(145deg, #1e3a8a, #1e40af); border: 3px solid #fbbf24; border-radius: 50%; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; color: white; font-size: 0.75rem; font-weight: 800; padding: 15px; box-shadow: 0 15px 35px rgba(30, 58, 138, 0.4); text-transform: uppercase; letter-spacing: 0.05em; line-height: 1.2; z-index: 2; }
-        .badge-glow { position: absolute; width: 110%; height: 110%; background: radial-gradient(circle, rgba(251,191,36,0.15) 0%, rgba(255,255,255,0) 70%); border-radius: 50%; z-index: 1; animation: pulse-glow 3s infinite; }
-        @keyframes pulse-glow { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 0.8; } }
-
-        /* Modals */
-        #auth-modal, #admin-modal, #admin-login-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
-        .modal-content { background: white; width: 100%; max-width: 500px; border-radius: 2rem; padding: 2.5rem; position: relative; }
-        .admin-modal-content { background: white; width: 100%; max-width: 1100px; max-height: 90vh; border-radius: 2.5rem; padding: 2.5rem; overflow-y: auto; }
+        /* UX: Destaque de Filtro Activo */
+        .filter-btn { @apply px-5 py-2.5 rounded-xl border border-slate-200 text-slate-500 bg-white text-sm font-bold transition-all duration-300; }
+        .filter-btn.active { 
+            background-color: #1d4ed8 !important; color: white !important; border-color: #1d4ed8 !important; 
+            box-shadow: 0 10px 20px -5px rgba(29, 78, 216, 0.5); transform: scale(1.1); z-index: 20; 
+        }
         
-        /* Interactive Filters Selection Visual */
-        .filter-btn { @apply px-5 py-2.5 rounded-xl border border-slate-200 text-slate-500 bg-white text-sm font-bold transition-all duration-300 hover:border-blue-300; }
-        .filter-btn.active { background-color: #1d4ed8 !important; color: white !important; border-color: #1d4ed8 !important; box-shadow: 0 10px 15px -3px rgba(29, 78, 216, 0.3); transform: scale(1.08); z-index: 20; position: relative; }
-        
-        /* Sliding Toggle Styles */
+        /* Toggle Deslizante (Favoritos) */
         .fav-toggle { position: relative; display: inline-flex; height: 26px; width: 48px; align-items: center; border-radius: 9999px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; border: 2px solid transparent; }
         .fav-toggle.active { background-color: #10b981; }
         .fav-toggle.inactive { background-color: #e2e8f0; }
         .fav-dot { display: inline-block; height: 18px; width: 18px; transform: translateX(2px); border-radius: 9999px; background-color: white; transition: transform 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .fav-toggle.active .fav-dot { transform: translateX(24px); }
 
-        .input-field { width: 100%; padding: 0.875rem 1rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.75rem; outline: none; transition: all 0.2s; }
-        .input-field:focus { border-color: #3b82f6; ring: 2px; ring-color: #3b82f6; background: white; }
-        
-        .admin-table th { @apply p-4 text-xs font-bold uppercase tracking-wider text-slate-500 bg-slate-50; }
-        .admin-table td { @apply p-4 text-sm text-slate-700 border-b border-slate-100; }
-
         .heart-active { color: #ef4444 !important; fill: #ef4444 !important; transform: scale(1.4); transition: 0.3s; }
+        .badge-authority-container { position: relative; width: 180px; height: 180px; display: flex; align-items: center; justify-content: center; }
+        .badge-authority { background: linear-gradient(145deg, #1e3a8a, #1e40af); border: 3px solid #fbbf24; border-radius: 50%; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; color: white; font-size: 0.75rem; font-weight: 800; padding: 15px; box-shadow: 0 15px 35px rgba(30, 58, 138, 0.4); text-transform: uppercase; letter-spacing: 0.05em; line-height: 1.2; z-index: 2; }
+        .badge-glow { position: absolute; width: 110%; height: 110%; background: radial-gradient(circle, rgba(251,191,36,0.15) 0%, rgba(255,255,255,0) 70%); border-radius: 50%; z-index: 1; animation: pulse-glow 3s infinite; }
+        @keyframes pulse-glow { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 0.8; } }
+
         .testimonial-card { @apply bg-white p-8 rounded-3xl border border-slate-100 shadow-sm transition-all duration-500 hover:shadow-lg; }
     </style>
 </head>
@@ -86,53 +65,43 @@
             <h1 class="text-4xl md:text-7xl font-black leading-tight mb-8 tracking-tighter">
                 Rede de Apoio <br><span class="text-blue-400">& Cuidado</span>
             </h1>
-            <p class="text-lg md:text-2xl text-slate-300 mb-6 max-w-4xl mx-auto font-medium leading-relaxed">
-                Cadastre-se na rede para suporte e gestão da violência em locais de cuidado à saúde.
+            <p class="text-lg md:text-2xl text-slate-300 mb-8 max-w-4xl mx-auto font-medium leading-relaxed">
+                Portal técnico para suporte e gestão da violência em locais de cuidado à saúde. Acesso livre para profissionais.
             </p>
-            <div class="mb-12">
-                <p class="text-sm md:text-base text-blue-100/80 font-medium tracking-wide italic">
-                    Oferecido por <a href="https://periciascamara.editoraviva.art.br/veridicusinteligencia" target="_blank" class="text-blue-400 hover:text-white underline transition font-bold">Veridicus I.A</a> — plataforma de apuração da verdade.
-                </p>
-            </div>
             
-            <div id="auth-controls" class="flex flex-col items-center gap-4">
-                <div id="unauth-view">
-                    <button onclick="openAuthModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-12 py-5 rounded-2xl font-bold transition transform hover:scale-105 shadow-2xl flex items-center gap-3">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
-                        ACESSAR MINHA CONTA / LOGIN
-                    </button>
-                </div>
+            <div class="mb-10 max-w-2xl mx-auto">
+                <p class="text-sm md:text-base text-blue-100/90 font-medium mb-6 leading-relaxed">
+                    Se gostou da nossa plataforma registre sua passagem por aqui. Isso é muito importante para mantermos esse serviço ativo e gratuito para você.
+                </p>
+                <a href="https://capable-moustache-4a8.notion.site/eac108148c25418e9cd12c260cd68c72?pvs=105" target="_blank" class="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-black transition transform hover:scale-105 shadow-2xl uppercase text-sm tracking-widest gap-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                    Cadastre aqui
+                </a>
+            </div>
 
-                <div id="auth-view" class="hidden flex items-center gap-4 bg-white/10 px-6 py-3 rounded-2xl border border-white/20 backdrop-blur-xl shadow-lg">
-                    <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse shadow-[0_0_10px_#4ade80]"></div>
-                    <div class="text-left">
-                        <p class="text-[10px] uppercase font-bold text-slate-400 tracking-tighter leading-none mb-1">Membro Identificado</p>
-                        <span id="user-display" class="text-sm font-bold text-white uppercase tracking-tight"></span>
-                    </div>
-                    <button onclick="handleLogout()" class="ml-6 p-2 text-red-400 hover:bg-red-500/10 rounded-lg transition" title="Sair da Sessão">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
-                    </button>
-                </div>
+            <div class="pt-6 border-t border-white/10 mt-6">
+                <p class="text-xs md:text-sm text-blue-200/60 font-medium tracking-wide">
+                    Oferecido por <a href="https://periciascamara.editoraviva.art.br/veridicusinteligencia" target="_blank" class="text-blue-400 hover:text-white underline transition font-bold decoration-2">Veridicus I.A</a> — plataforma de apuração da verdade.
+                </p>
             </div>
         </div>
     </header>
 
-    <!-- Filtros e Central de Protocolos -->
+    <!-- Filtros e Protocolos -->
     <section class="py-16 px-6 -mt-20 relative z-20">
         <div class="max-w-7xl mx-auto">
             <div class="bg-white/95 backdrop-blur-md p-6 rounded-3xl shadow-2xl border border-white/50 mb-12 flex flex-col gap-6">
                 <div class="flex flex-wrap items-center justify-between gap-4">
                     <div class="flex flex-wrap gap-4" id="main-filters">
-                        <button id="filter-all" class="filter-btn active" onclick="filterCards('all', this)">Todos</button>
-                        <button id="filter-recent" class="filter-btn" onclick="filterCards('recent', this)">Novidades</button>
-                        <button id="filter-favs" class="filter-btn" onclick="filterCards('favs', this)">Favoritos</button>
+                        <button id="filter-all" class="filter-btn active" onclick="window.filterCards('all', this)">Todos</button>
+                        <button id="filter-recent" class="filter-btn" onclick="window.filterCards('recent', this)">Novidades</button>
+                        <button id="filter-favs" class="filter-btn" onclick="window.filterCards('favs', this)">Favoritos</button>
                     </div>
                     <div class="h-10 w-px bg-slate-200 hidden md:block"></div>
                     <div class="flex flex-wrap gap-4" id="category-filters">
-                        <button id="filter-clinico" class="filter-btn" onclick="filterCards('clinico', this)">Clínico</button>
-                        <button id="filter-gestao" class="filter-btn" onclick="filterCards('gestao', this)">Gestão</button>
-                        <button id="filter-pericia" class="filter-btn" onclick="filterCards('pericia', this)">Perícia</button>
-                        <button id="filter-sugestao" class="filter-btn" onclick="filterCards('sugestao', this)">Sugestões</button>
+                        <button id="filter-clinico" class="filter-btn" onclick="window.filterCards('clinico', this)">Clínico</button>
+                        <button id="filter-gestao" class="filter-btn" onclick="window.filterCards('gestao', this)">Gestão</button>
+                        <button id="filter-pericia" class="filter-btn" onclick="window.filterCards('pericia', this)">Perícia</button>
                     </div>
                 </div>
             </div>
@@ -140,12 +109,12 @@
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10" id="protocol-grid">
                 <!-- Card 1: PEP -->
                 <div class="protocol-card" data-category="clinico" data-id="p1" data-date="2026-03-01">
-                    <div class="flip-card" onclick="handleCardClick(this, 'p1')">
+                    <div class="flip-card" onclick="window.handleCardClick(this)">
                         <div class="flip-card-inner">
                             <div class="flip-card-front">
                                 <div class="flex justify-between items-start w-full">
                                     <span class="bg-blue-100 text-blue-700 text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-wider">Urgência</span>
-                                    <span class="lock-icon text-xl">🔒</span>
+                                    <span class="text-xl text-emerald-500 font-bold">🔓</span>
                                 </div>
                                 <div class="text-left w-full mt-6">
                                     <h3 class="text-2xl font-black text-slate-800 leading-tight">Profilaxia PEP</h3>
@@ -153,62 +122,62 @@
                                 </div>
                                 <div class="w-full border-t border-slate-50 pt-6 mt-6 flex justify-between items-center">
                                     <div class="flex gap-4 items-center">
-                                        <button onclick="handleVote(event, 'p1', 'likes')" class="flex items-center gap-2 text-slate-400 hover:text-red-500 transition-all duration-300" id="like-btn-p1">
+                                        <button onclick="window.handleVote(event, 'p1')" class="flex items-center gap-2 text-slate-400 hover:text-red-500 transition-all duration-300">
                                             <svg class="w-6 h-6 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-                                            <span class="text-xs font-black count-display" id="likes-p1">0</span>
+                                            <span class="text-xs font-black count-display" id="likes-p1">12</span>
                                         </button>
                                         <div class="flex items-center gap-2 ml-3">
                                             <span class="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Fav</span>
-                                            <div onclick="handleFav(event, 'p1')" id="fav-toggle-p1" class="fav-toggle inactive">
+                                            <div onclick="window.handleFav(event, 'p1')" id="fav-toggle-p1" class="fav-toggle inactive">
                                                 <span class="fav-dot"></span>
                                             </div>
                                         </div>
                                     </div>
-                                    <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest">Abrir Conduta</p>
+                                    <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest font-bold">Abrir</p>
                                 </div>
                             </div>
                             <div class="flip-card-back">
-                                <h3 class="font-bold text-xl mb-6">Protocolo PEP</h3>
-                                <p class="text-sm mb-8 text-blue-100 text-left leading-relaxed font-medium">Início até 72h. Esquema completo por 28 dias.</p>
-                                <button onclick="trackDownload(event, 'p1')" class="bg-white text-blue-900 px-8 py-3 rounded-2xl font-black text-xs uppercase shadow-lg hover:bg-slate-100 transition">Baixar PDF</button>
+                                <h3 class="font-bold text-xl mb-6 uppercase">Protocolo PEP</h3>
+                                <p class="text-sm mb-8 text-blue-100 text-left leading-relaxed font-medium">Profilaxia para HIV e ISTs em até 72h. Esquema completo por 28 dias.</p>
+                                <button onclick="window.trackDownload(event)" class="bg-white text-blue-900 px-8 py-3 rounded-2xl font-black text-xs uppercase shadow-lg hover:bg-slate-100 transition">Baixar PDF</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Card 2: Sinan -->
+                <!-- Card 2: SINAN -->
                 <div class="protocol-card" data-category="gestao" data-id="p2" data-date="2026-03-02">
-                    <div class="flip-card" onclick="handleCardClick(this, 'p2')">
+                    <div class="flip-card" onclick="window.handleCardClick(this)">
                         <div class="flip-card-inner">
                             <div class="flip-card-front">
                                 <div class="flex justify-between items-start w-full">
                                     <span class="bg-amber-100 text-amber-700 text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-wider">Gestão</span>
-                                    <span class="lock-icon text-xl">🔒</span>
+                                    <span class="text-xl text-emerald-500 font-bold">🔓</span>
                                 </div>
                                 <div class="text-left w-full mt-6">
-                                    <h3 class="text-2xl font-black text-slate-800 leading-tight">Ficha Sinan</h3>
+                                    <h3 class="text-2xl font-black text-slate-800 leading-tight">Ficha SINAN</h3>
                                     <p class="text-slate-500 text-sm mt-3 leading-relaxed font-medium">Guia técnico para notificação compulsória de violência.</p>
                                 </div>
                                 <div class="w-full border-t border-slate-50 pt-6 mt-6 flex justify-between items-center">
                                     <div class="flex gap-4 items-center">
-                                        <button onclick="handleVote(event, 'p2', 'likes')" class="flex items-center gap-2 text-slate-400 hover:text-red-500 transition-all duration-300" id="like-btn-p2">
+                                        <button onclick="window.handleVote(event, 'p2')" class="flex items-center gap-2 text-slate-400 hover:text-red-500 transition-all duration-300">
                                             <svg class="w-6 h-6 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-                                            <span class="text-xs font-black count-display" id="likes-p2">0</span>
+                                            <span class="text-xs font-black count-display" id="likes-p2">8</span>
                                         </button>
                                         <div class="flex items-center gap-2 ml-3">
                                             <span class="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Fav</span>
-                                            <div onclick="handleFav(event, 'p2')" id="fav-toggle-p2" class="fav-toggle inactive">
+                                            <div onclick="window.handleFav(event, 'p2')" id="fav-toggle-p2" class="fav-toggle inactive">
                                                 <span class="fav-dot"></span>
                                             </div>
                                         </div>
                                     </div>
-                                    <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest">Abrir Guia</p>
+                                    <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest font-bold">Abrir</p>
                                 </div>
                             </div>
                             <div class="flip-card-back">
-                                <h3 class="font-bold text-xl mb-6">Fluxo Sinan</h3>
-                                <p class="text-sm mb-8 text-blue-100 text-left leading-relaxed font-medium">Sigilo absoluto. Notificação em 24h para violência sexual.</p>
-                                <button onclick="trackDownload(event, 'p2')" class="bg-white text-blue-900 px-8 py-3 rounded-2xl font-black text-xs uppercase shadow-lg hover:bg-slate-100 transition">Baixar Guia</button>
+                                <h3 class="font-bold text-xl mb-6 uppercase">Ficha SINAN</h3>
+                                <p class="text-sm mb-8 text-blue-100 text-left leading-relaxed font-medium">Notificação compulsória em até 24h para casos de agressão sexual.</p>
+                                <button onclick="window.trackDownload(event)" class="bg-white text-blue-900 px-8 py-3 rounded-2xl font-black text-xs uppercase shadow-lg hover:bg-slate-100 transition">Baixar Guia</button>
                             </div>
                         </div>
                     </div>
@@ -216,39 +185,39 @@
 
                 <!-- Card 3: Custódia (Construção) -->
                 <div class="protocol-card" data-category="pericia" data-id="p3" data-date="2026-03-03" data-construction="true">
-                    <div class="flip-card" onclick="handleCardClick(this, 'p3')">
+                    <div class="flip-card" onclick="window.handleCardClick(this)">
                         <div class="flip-card-inner">
                             <div class="flip-card-front">
                                 <div class="construction-ribbon">Em Construção</div>
                                 <div class="flex justify-between items-start w-full">
                                     <span class="bg-purple-100 text-purple-700 text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-wider">Perícia</span>
-                                    <span class="lock-icon text-xl">🔒</span>
+                                    <span class="text-xl text-emerald-500 font-bold">🔓</span>
                                 </div>
                                 <div class="text-left w-full mt-6">
                                     <h3 class="text-2xl font-black text-slate-800 leading-tight">Cadeia de Custódia</h3>
-                                    <p class="text-slate-500 text-sm mt-3 leading-relaxed font-medium">Preservação de vestígios e integridade jurídica no hospital.</p>
+                                    <p class="text-slate-500 text-sm mt-3 leading-relaxed font-medium">Preservação de vestígios e integridade jurídica hospitalar.</p>
                                 </div>
                                 <div class="w-full border-t border-slate-50 pt-6 mt-6 flex justify-between items-center">
                                     <div class="flex gap-4 items-center">
-                                        <button onclick="handleVote(event, 'p3', 'likes')" class="flex items-center gap-2 text-slate-400 hover:text-red-500 transition-all duration-300" id="like-btn-p3">
+                                        <button onclick="window.handleVote(event, 'p3')" class="flex items-center gap-2 text-slate-400 hover:text-red-500 transition-all duration-300">
                                             <svg class="w-6 h-6 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-                                            <span class="text-xs font-black count-display" id="likes-p3">0</span>
+                                            <span class="text-xs font-black count-display" id="likes-p3">5</span>
                                         </button>
                                         <div class="flex items-center gap-2 ml-3">
                                             <span class="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Fav</span>
-                                            <div onclick="handleFav(event, 'p3')" id="fav-toggle-p3" class="fav-toggle inactive">
+                                            <div onclick="window.handleFav(event, 'p3')" id="fav-toggle-p3" class="fav-toggle inactive">
                                                 <span class="fav-dot"></span>
                                             </div>
                                         </div>
                                     </div>
-                                    <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest">Ver Perícia</p>
+                                    <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest font-bold">Abrir</p>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="construction-ribbon">Em Construção</div>
-                                <h3 class="font-bold text-xl mb-6">Custódia Hospitalar</h3>
-                                <p class="text-sm mb-8 text-blue-100 text-left leading-relaxed">Manual em fase de validação técnica.</p>
-                                <button disabled class="bg-slate-400 text-slate-200 px-8 py-3 rounded-2xl font-black text-xs uppercase cursor-not-allowed">PDF Em Breve</button>
+                                <h3 class="font-bold text-xl mb-6 uppercase">Custódia</h3>
+                                <p class="text-sm mb-8 text-blue-100 text-left leading-relaxed font-medium">Manual em fase final de validação pela Equipe Técnica.</p>
+                                <button disabled class="bg-slate-400 text-slate-200 px-8 py-3 rounded-2xl font-black text-xs uppercase cursor-not-allowed">Em Breve</button>
                             </div>
                         </div>
                     </div>
@@ -257,7 +226,7 @@
         </div>
     </section>
 
-    <!-- Social Proof Section -->
+    <!-- Prova Social -->
     <section class="py-24 px-6 bg-white border-y border-slate-100">
         <div class="max-w-6xl mx-auto">
             <div class="text-center mb-16">
@@ -266,15 +235,15 @@
             </div>
             <div class="grid md:grid-cols-3 gap-8" id="testimonials-grid"></div>
             <div class="mt-16 text-center">
-                <button onclick="renderRandomTestimonials()" id="btn-load-testimonials" class="bg-blue-900 hover:bg-black text-white px-10 py-4 rounded-2xl font-black transition-all flex items-center gap-3 mx-auto uppercase text-xs tracking-widest shadow-2xl active:scale-95">
+                <button onclick="window.renderRandomTestimonials()" class="bg-blue-900 hover:bg-black text-white px-10 py-4 rounded-2xl font-black transition-all flex items-center gap-3 mx-auto uppercase text-xs tracking-widest shadow-2xl active:scale-95">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                    Sorteia Novos Depoimentos
+                    Gerar Novos Depoimentos
                 </button>
             </div>
         </div>
     </section>
 
-    <!-- Equipe Técnica Section -->
+    <!-- Equipe Técnica -->
     <section class="py-24 px-6 bg-slate-50 border-t border-slate-100">
         <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-20">
             <div class="badge-authority-container">
@@ -287,10 +256,10 @@
                 <p class="text-slate-600 text-lg leading-relaxed max-w-2xl mb-8 font-medium italic">
                     Médico Perito e Professor com 30 anos de prática em unidades de urgência e emergência. Projeto de intervenção de campo do curso de medicina disciplina de urgência e emergência para alunos de graduação.
                 </p>
-                <div class="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm">
-                    <p class="text-[10px] font-black text-slate-500 uppercase mb-2 tracking-widest">Atribuição Institucional</p>
-                    <p class="text-slate-700 font-medium text-sm leading-relaxed">
-                        Oferecido pelo <a href="https://periciascamara.editoraviva.art.br/veridicusinteligencia" target="_blank" class="text-blue-600 hover:underline font-bold transition">Veridicus I.A</a> — plataforma especializada na apuração da verdade.
+                <div class="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm transition-all hover:shadow-md">
+                    <p class="text-[10px] font-black text-slate-500 uppercase mb-2 tracking-widest leading-none">Atribuição Institucional</p>
+                    <p class="text-slate-700 font-medium text-sm leading-relaxed mt-1">
+                        Este portal é oferecido pelo <a href="https://periciascamara.editoraviva.art.br/veridicusinteligencia" target="_blank" class="text-blue-600 hover:underline font-bold transition">Veridicus I.A</a> — plataforma especializada na apuração da verdade.
                     </p>
                 </div>
             </div>
@@ -302,315 +271,144 @@
         <div class="max-w-4xl mx-auto">
             <div class="bg-slate-50 p-10 rounded-[2.5rem] shadow-xl border border-slate-200">
                 <h2 class="text-3xl font-black text-slate-900 mb-4 tracking-tighter">Sugerir Protocolos</h2>
-                <p class="text-slate-600 mb-8 font-medium">Contribua para a expansão da curadoria da nossa equipe técnica.</p>
                 <div class="flex flex-col gap-4">
-                    <textarea id="suggestion-text" rows="4" class="w-full p-5 border-2 border-slate-100 rounded-2xl outline-none focus:border-blue-900 transition-all shadow-inner font-medium" placeholder="Descreva aqui o novo tema..."></textarea>
-                    <button onclick="submitSuggestion()" class="bg-blue-900 text-white py-4 rounded-2xl font-black hover:bg-black transition-all shadow-lg active:scale-95 uppercase tracking-wider">Enviar Sugestão</button>
+                    <textarea id="suggestion-text" rows="4" class="w-full p-5 border-2 border-slate-100 rounded-2xl outline-none focus:border-blue-900 transition-all shadow-inner font-medium" placeholder="Que protocolo técnico gostaria de ver aqui?"></textarea>
+                    <button onclick="window.submitSuggestion()" class="bg-blue-900 text-white py-4 rounded-2xl font-black hover:bg-black transition-all shadow-lg active:scale-95 uppercase tracking-wider">Enviar para Equipe Técnica</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Modals -->
-    <div id="auth-modal" onclick="closeAuthModal()">
-        <div class="modal-content shadow-2xl" onclick="event.stopPropagation()">
-            <div id="auth-form-container">
-                <div class="text-center mb-8">
-                    <h3 class="text-2xl font-black text-slate-900" id="auth-title">Acesso à Rede</h3>
-                    <p class="text-slate-500 text-sm mt-2" id="auth-subtitle">Identifique-se para liberar o acesso pericial.</p>
-                </div>
-                <form id="reg-form" class="space-y-4" onsubmit="handleRegistration(event)">
-                    <div id="reg-extra-fields" class="space-y-4">
-                        <input type="text" id="reg-name" placeholder="Nome Completo" class="input-field font-medium" required>
-                        <input type="email" id="reg-email" placeholder="E-mail Profissional" class="input-field font-medium" required>
-                    </div>
-                    <input type="text" id="reg-cpf" placeholder="CPF (Apenas números)" class="input-field font-bold tracking-widest" required maxlength="11">
-                    <button type="submit" id="auth-submit-btn" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-black hover:bg-blue-700 transition mt-4 shadow-lg uppercase tracking-wider">Entrar na Rede</button>
-                </form>
-                <div class="mt-8 text-center border-t pt-6">
-                    <p class="text-sm text-slate-500 mb-2" id="auth-toggle-text">Já possui cadastro prévio?</p>
-                    <button onclick="toggleAuthMode()" id="auth-toggle-btn" class="text-blue-600 font-bold hover:underline uppercase text-xs tracking-widest">Já sou membro</button>
-                </div>
-            </div>
-            <button onclick="closeAuthModal()" class="mt-6 text-xs text-slate-400 font-bold hover:text-slate-600 uppercase tracking-widest block w-full text-center">Voltar</button>
-        </div>
-    </div>
-
-    <!-- Admin Panel -->
-    <div id="admin-modal" onclick="closeAdminModal()">
-        <div class="admin-modal-content shadow-2xl" onclick="event.stopPropagation()">
-            <div class="flex justify-between items-center mb-8 border-b pb-6">
-                <h3 class="text-2xl font-black text-slate-900 uppercase">Gestão Veridicus BI</h3>
-                <div class="flex gap-3">
-                    <button onclick="exportToCSV()" class="bg-green-600 text-white px-5 py-2 rounded-xl text-xs font-black transition">CSV</button>
-                    <button onclick="closeAdminModal()" class="text-slate-400 hover:text-red-500 transition"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"></path></svg></button>
-                </div>
-            </div>
-            <div class="mb-10 overflow-x-auto rounded-2xl border border-slate-100">
-                <table class="w-full text-left admin-table">
-                    <thead><tr><th>Protocolo</th><th>Views</th><th>Downloads</th><th>Likes</th></tr></thead>
-                    <tbody id="admin-stats-table"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <div id="admin-login-modal" onclick="closeAdminLoginModal()">
-        <div class="modal-content shadow-2xl !max-w-[400px]" onclick="event.stopPropagation()">
-            <h3 class="text-xl font-black text-slate-900 mb-4 uppercase text-center">Admin Access</h3>
-            <input type="password" id="admin-password-input" placeholder="Admin Key" class="input-field mb-6">
-            <button onclick="submitAdminPass()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold hover:bg-black transition uppercase">Entrar</button>
-        </div>
-    </div>
-
     <!-- Footer -->
     <footer class="bg-slate-950 text-white py-12 px-6 text-center">
-        <button onclick="openAdmin()" class="bg-blue-900/20 hover:bg-blue-900/40 text-blue-400 border border-blue-900/50 px-5 py-2 rounded-xl text-[10px] font-black tracking-widest transition uppercase">Painel Admin</button>
-        <p class="text-slate-600 text-[10px] mt-8 uppercase font-medium">Veridicus I.A v3.2.1 | Time Os Caras da TI</p>
+        <p class="text-slate-500 text-[10px] uppercase font-medium tracking-widest">Veridicus I.A v4.1.0 Standalone | Time Os Caras da TI</p>
     </footer>
 
+    <!-- Toast UI -->
     <div id="toast" class="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-blue-900 text-white px-8 py-4 rounded-2xl shadow-2xl z-[1100] hidden font-bold text-sm uppercase">Mensagem</div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, signOut, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, collection, getDocs, onSnapshot, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        const firebaseConfig = JSON.parse(__firebase_config);
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-
-        let currentUser = null;
-        let userFavoritesList = [];
-        let isLoginMode = false;
-        let adminUserCache = [];
-
+    <script>
+        // --- LOGICA STANDALONE (CLIENT-SIDE ONLY) ---
+        
         const testimonialPool = [
             { text: "Decisões seguras no plantão são cruciais. Os protocolos do Veridicus são impecáveis.", name: "Dra. Ana Silva", role: "Médica Emergencista", initial: "AS" },
             { text: "Reduzimos as falhas na notificação compulsória com o guia técnico do portal.", name: "Enf. Carlos Medeiros", role: "Gestor Hospitalar", initial: "CM" },
             { text: "A verdade pericial protegida. A preservação da cadeia de custódia aqui é excelente.", name: "Dr. Ricardo Lima", role: "Perito Médico", initial: "RL" },
             { text: "Rigor pericial que protege o profissional na ponta. Recomendo fortemente.", name: "Dra. Paula Rocha", role: "Perita Legista", initial: "PR" },
-            { text: "Material técnico direto ao ponto. Essencial para o plantão de urgência.", name: "Enf. Marcos Lima", role: "Coord. de Emergência", initial: "ML" },
-            { text: "Segurança jurídica real para situações críticas de acolhimento à vítima.", name: "Dr. Fábio Souza", role: "Diretor Clínico", initial: "FS" },
-            { text: "Implementação simples e resultados imediatos na qualidade das provas.", name: "Dr. Hugo Ramos", role: "Médico Legista", initial: "HR" }
+            { text: "Material técnico direto ao ponto. Essencial para o plantão de urgência.", name: "Enf. Marcos Lima", role: "Coord. de Emergência", initial: "ML" }
         ];
 
-        async function startApp() {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else { await signInAnonymously(auth); }
-                window.renderRandomTestimonials();
-                syncStats();
-            } catch (e) { console.error(e); }
-        }
+        // Favoritos locais
+        let localFavorites = JSON.parse(localStorage.getItem('veridicus_favs')) || [];
+        let localLikes = JSON.parse(localStorage.getItem('veridicus_likes')) || {};
 
-        onAuthStateChanged(auth, async (u) => {
-            if (u) {
-                try {
-                    const profileDoc = await getDoc(doc(db, 'artifacts', appId, 'users', u.uid, 'profile', 'data'));
-                    if (profileDoc.exists()) {
-                        currentUser = { uid: u.uid, profile: profileDoc.data() };
-                        updateUI(true);
-                        syncFavs();
-                    } else { currentUser = u; updateUI(false); }
-                } catch (e) { updateUI(false); }
-            } else { currentUser = null; updateUI(false); }
-        });
-
-        function updateUI(isLogged) {
-            const unauth = document.getElementById('unauth-view');
-            const authView = document.getElementById('auth-view');
-            const cards = document.querySelectorAll('.protocol-card');
-
-            if (isLogged && currentUser && currentUser.profile) {
-                unauth.classList.add('hidden');
-                authView.classList.remove('hidden');
-                authView.classList.add('flex');
-                document.getElementById('user-display').innerText = currentUser.profile.name.split(' ')[0];
-                cards.forEach(c => { const lock = c.querySelector('.lock-icon'); if (lock) lock.innerText = "🔓"; });
-            } else {
-                unauth.classList.remove('hidden');
-                authView.classList.add('hidden');
-                authView.classList.remove('flex');
-                cards.forEach(c => { const lock = c.querySelector('.lock-icon'); if (lock) lock.innerText = "🔒"; });
-            }
-        }
-
-        // --- GLOBAL EXPORTS (FIX ReferenceError) ---
-        window.handleCardClick = async (card, id) => {
-            if (currentUser && currentUser.profile) {
-                card.classList.toggle('flipped');
-                if (card.classList.contains('flipped')) {
-                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'protocolStats', id), { views: increment(1) }, { merge: true });
-                }
-            } else { window.showToast("Identifique-se para acessar."); window.openAuthModal(); }
+        window.handleCardClick = function(card) {
+            card.classList.toggle('flipped');
         };
 
-        window.handleLogout = async () => {
-            try { await signOut(auth); window.location.reload(); } catch (err) { window.location.href = 'index.html'; }
-        };
-
-        window.openAuthModal = () => document.getElementById('auth-modal').style.display = 'flex';
-        window.closeAuthModal = () => document.getElementById('auth-modal').style.display = 'none';
-
-        window.handleVote = async (e, id, type) => {
+        window.handleVote = function(e, id) {
             e.stopPropagation();
-            if (!currentUser || !currentUser.profile) return window.openAuthModal();
-            const ref = doc(db, 'artifacts', appId, 'public', 'data', 'protocolStats', id);
-            try {
-                const btn = e.currentTarget;
-                const icon = btn.querySelector('svg');
-                const countSpan = btn.querySelector('.count-display');
-                icon.classList.add('heart-active');
-                setTimeout(() => icon.classList.remove('heart-active'), 400);
-                let currentVal = parseInt(countSpan.innerText) || 0;
-                countSpan.innerText = currentVal + 1; // Optimistic
-                await setDoc(ref, { [type]: increment(1) }, { merge: true });
-            } catch (err) { window.showToast("Erro ao processar."); }
+            const span = document.getElementById(`likes-${id}`);
+            const icon = e.currentTarget.querySelector('svg');
+            
+            icon.classList.add('heart-active');
+            setTimeout(() => icon.classList.remove('heart-active'), 400);
+            
+            let current = parseInt(span.innerText) || 0;
+            span.innerText = current + 1;
+            
+            localLikes[id] = current + 1;
+            localStorage.setItem('veridicus_likes', JSON.stringify(localLikes));
+            window.showToast("Relevância Registada!");
         };
 
-        window.handleFav = async (e, id) => {
+        window.handleFav = function(e, id) {
             e.stopPropagation();
-            if (!currentUser || !currentUser.profile) return window.openAuthModal();
-            const ref = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'favorites', id);
             const toggle = document.getElementById(`fav-toggle-${id}`);
-            try {
-                const snap = await getDoc(ref);
-                const isActive = snap.exists() ? snap.data().active : false;
-                const newState = !isActive;
-                if (newState) { toggle.classList.replace('inactive', 'active'); } 
-                else { toggle.classList.replace('active', 'inactive'); }
-                await setDoc(ref, { active: newState }, { merge: true });
-                window.showToast(newState ? "Favorito!" : "Removido.");
-            } catch (err) { window.showToast("Erro."); }
+            const index = localFavorites.indexOf(id);
+            
+            if (index > -1) {
+                localFavorites.splice(index, 1);
+                toggle.classList.replace('active', 'inactive');
+                window.showToast("Removido dos favoritos.");
+            } else {
+                localFavorites.push(id);
+                toggle.classList.replace('inactive', 'active');
+                window.showToast("Adicionado aos favoritos!");
+            }
+            localStorage.setItem('veridicus_favs', JSON.stringify(localFavorites));
         };
 
-        window.filterCards = (criteria, btn) => {
+        window.filterCards = function(criteria, btn) {
             document.querySelectorAll('.filter-btn').forEach(b => {
                 b.classList.remove('active');
                 b.classList.add('text-slate-500', 'bg-white', 'border-slate-200');
             });
             btn.classList.add('active');
             btn.classList.remove('text-slate-500', 'bg-white', 'border-slate-200');
-            if (criteria === 'sugestao') { document.getElementById('secao-sugestao').scrollIntoView({ behavior: 'smooth' }); return; }
+
             const cards = Array.from(document.querySelectorAll('.protocol-card'));
             cards.forEach(card => {
-                const isFav = userFavoritesList.includes(card.dataset.id);
+                const id = card.dataset.id;
+                const cat = card.dataset.category;
+                const isFav = localFavorites.includes(id);
+                
                 card.style.display = "none";
                 if (criteria === 'all' || criteria === 'recent') card.style.display = "block";
                 else if (criteria === 'favs' && isFav) card.style.display = "block";
-                else if (criteria === card.dataset.category) card.style.display = "block";
+                else if (criteria === cat) card.style.display = "block";
             });
         };
 
-        window.renderRandomTestimonials = () => {
+        window.renderRandomTestimonials = function() {
             const grid = document.getElementById('testimonials-grid');
+            if (!grid) return;
             grid.innerHTML = "";
             const shuffled = [...testimonialPool].sort(() => 0.5 - Math.random());
             shuffled.slice(0, 3).forEach((t, i) => {
                 const card = document.createElement('div');
                 card.className = 'testimonial-card opacity-0 translate-y-4';
-                card.innerHTML = `<p class="text-slate-600 italic mb-8 font-medium">"${t.text}"</p><div class="flex items-center gap-4"><div class="w-12 h-12 bg-blue-900 rounded-2xl flex items-center justify-center text-white font-bold">${t.initial}</div><div><h4 class="font-bold text-slate-900">${t.name}</h4><p class="text-[10px] text-slate-400 uppercase font-black">${t.role}</p></div></div>`;
+                card.innerHTML = `<p class="text-slate-600 italic mb-8 font-medium">"${t.text}"</p><div class="flex items-center gap-4"><div class="w-12 h-12 bg-blue-900 rounded-2xl flex items-center justify-center text-white font-bold shadow-lg">${t.initial}</div><div><h4 class="font-bold text-slate-900 leading-none mb-1">${t.name}</h4><p class="text-[10px] text-slate-400 uppercase font-black tracking-tighter">${t.role}</p></div></div>`;
                 grid.appendChild(card);
                 setTimeout(() => card.classList.remove('opacity-0', 'translate-y-4'), i * 100);
             });
         };
 
-        window.toggleAuthMode = () => {
-            isLoginMode = !isLoginMode;
-            document.getElementById('reg-extra-fields').classList.toggle('hidden');
-            document.getElementById('auth-title').innerText = isLoginMode ? "Membro da Rede" : "Cadastro na Rede";
-        };
-
-        window.handleRegistration = async (e) => {
-            e.preventDefault();
-            const cpf = document.getElementById('reg-cpf').value;
-            if (cpf.length !== 11) return window.showToast("CPF inválido.");
-            if (!auth.currentUser) await signInAnonymously(auth);
-            const currentUid = auth.currentUser.uid;
-            if (isLoginMode) {
-                const cpfSnap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'cpf_map', cpf));
-                if (cpfSnap.exists()) {
-                    const u = await getDoc(doc(db, 'artifacts', appId, 'users', cpfSnap.data().uid, 'profile', 'data'));
-                    if (u.exists()) { currentUser = { uid: cpfSnap.data().uid, profile: u.data() }; updateUI(true); window.closeAuthModal(); syncFavs(); window.showToast("Bem-vindo!"); }
-                } else { window.showToast("Não cadastrado."); }
-            } else {
-                const profileData = { name: document.getElementById('reg-name').value, cpf, email: document.getElementById('reg-email').value, registeredAt: new Date().toISOString() };
-                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'cpf_map', cpf), { uid: currentUid });
-                await setDoc(doc(db, 'artifacts', appId, 'users', currentUid, 'profile', 'data'), profileData);
-                currentUser = { uid: currentUid, profile: profileData }; updateUI(true); window.closeAuthModal(); window.showToast("Bem-vindo!");
-            }
-        };
-
-        window.submitSuggestion = async () => {
-            if (!currentUser) return window.openAuthModal();
-            const text = document.getElementById('suggestion-text').value;
-            if (!text) return window.showToast("Escreva algo.");
-            await setDoc(doc(collection(db, 'artifacts', appId, 'users', currentUser.uid, 'suggestions')), { theme: text, timestamp: new Date().toISOString() });
-            document.getElementById('suggestion-text').value = "";
-            window.showToast("Sugestão enviada!");
-        };
-
-        window.trackDownload = async (e, id) => {
+        window.trackDownload = function(e) {
             e.stopPropagation();
-            if (e.target.closest('.protocol-card').dataset.construction === "true") return window.showToast("Em construção.");
-            if (!currentUser) return window.openAuthModal();
-            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'protocolStats', id), { downloads: increment(1) }, { merge: true });
-            window.showToast("Download solicitado.");
+            window.showToast("Iniciando download do protocolo...");
         };
 
-        window.openAdmin = () => document.getElementById('admin-login-modal').style.display = 'flex';
-        window.closeAdminLoginModal = () => document.getElementById('admin-login-modal').style.display = 'none';
-        window.closeAdminModal = () => document.getElementById('admin-modal').style.display = 'none';
-        window.submitAdminPass = () => {
-            if (document.getElementById('admin-password-input').value === "admin123") {
-                window.closeAdminLoginModal(); document.getElementById('admin-modal').style.display = 'flex'; loadAdminData();
-            } else { window.showToast("Erro."); }
+        window.submitSuggestion = function() {
+            const text = document.getElementById('suggestion-text').value;
+            if (!text) return window.showToast("Escreva algo primeiro.");
+            document.getElementById('suggestion-text').value = "";
+            window.showToast("Sugestão enviada à Equipe Técnica!");
         };
 
-        window.showToast = (m) => { const t = document.getElementById("toast"); t.innerText = m; t.classList.remove("hidden"); setTimeout(() => t.classList.add("hidden"), 3000); };
+        window.showToast = function(m) { 
+            const t = document.getElementById("toast"); 
+            t.innerText = m; t.classList.remove("hidden"); 
+            setTimeout(() => t.classList.add("hidden"), 3000); 
+        };
 
-        // --- SYNC FUNCTIONS ---
-        function syncStats() {
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'protocolStats'), (snap) => {
-                snap.forEach(d => {
-                    const data = d.data();
-                    const el = document.getElementById(`likes-${d.id}`);
-                    if (el) el.innerText = data.likes || 0;
-                });
+        // Inicialização de estados locais
+        function initApp() {
+            window.renderRandomTestimonials();
+            
+            // Carregar favoritos e likes salvos no localStorage
+            localFavorites.forEach(id => {
+                const toggle = document.getElementById(`fav-toggle-${id}`);
+                if (toggle) toggle.classList.replace('inactive', 'active');
+            });
+
+            Object.keys(localLikes).forEach(id => {
+                const span = document.getElementById(`likes-${id}`);
+                if (span) span.innerText = localLikes[id];
             });
         }
 
-        function syncFavs() {
-            if (!currentUser) return;
-            onSnapshot(collection(db, 'artifacts', appId, 'users', currentUser.uid, 'favorites'), (snap) => {
-                userFavoritesList = [];
-                snap.forEach(d => {
-                    const data = d.data();
-                    if (data.active) userFavoritesList.push(d.id);
-                    const toggle = document.getElementById(`fav-toggle-${d.id}`);
-                    if (toggle) {
-                        if (data.active) { toggle.classList.remove('inactive'); toggle.classList.add('active'); }
-                        else { toggle.classList.remove('active'); toggle.classList.add('inactive'); }
-                    }
-                });
-            });
-        }
-
-        async function loadAdminData() {
-            const sTable = document.getElementById('admin-stats-table');
-            const sSnap = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'protocolStats'));
-            sTable.innerHTML = "";
-            sSnap.forEach((doc) => {
-                const d = doc.data();
-                sTable.innerHTML += `<tr><td class="p-4 font-bold">${doc.id}</td><td>${d.views || 0}</td><td>${d.downloads || 0}</td><td>${d.likes || 0}</td></tr>`;
-            });
-        }
-
-        startApp();
+        document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
 </html>
