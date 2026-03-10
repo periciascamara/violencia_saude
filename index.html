@@ -31,7 +31,7 @@
         .construction-ribbon { position: absolute; top: 20px; right: -35px; background: #f59e0b; color: white; padding: 5px 40px; font-size: 10px; font-weight: 900; text-transform: uppercase; transform: rotate(45deg); z-index: 50; box-shadow: 0 2px 10px rgba(0,0,0,0.1); letter-spacing: 1px; pointer-events: none; }
 
         /* UX: Destaque de Filtro Activo */
-        .filter-btn { @apply px-5 py-2.5 rounded-xl border border-slate-200 text-slate-500 bg-white text-sm font-bold transition-all duration-300; }
+        .filter-btn { @apply px-5 py-2.5 rounded-xl border border-slate-200 text-slate-500 bg-white text-sm font-bold transition-all duration-300 hover:border-blue-300; }
         .filter-btn.active { 
             background-color: #1d4ed8 !important; color: white !important; border-color: #1d4ed8 !important; 
             box-shadow: 0 10px 20px -5px rgba(29, 78, 216, 0.5); transform: scale(1.1); z-index: 20; 
@@ -71,11 +71,11 @@
             
             <div class="mb-10 max-w-2xl mx-auto">
                 <p class="text-sm md:text-base text-blue-100/90 font-medium mb-6 leading-relaxed">
-                    Se gostou da nossa plataforma registre sua passagem por aqui. Isso é muito importante para mantermos esse serviço ativo e gratuito para você.
+                    Se gostou da nossa plataforma registe a sua passagem por aqui. Isso é muito importante para mantermos este serviço ativo e gratuito para si.
                 </p>
                 <a href="https://capable-moustache-4a8.notion.site/eac108148c25418e9cd12c260cd68c72?pvs=105" target="_blank" class="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-black transition transform hover:scale-105 shadow-2xl uppercase text-sm tracking-widest gap-3">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                    Cadastre aqui
+                    Registe-se aqui
                 </a>
             </div>
 
@@ -117,7 +117,7 @@
                                     <span class="text-xl text-emerald-500 font-bold">🔓</span>
                                 </div>
                                 <div class="text-left w-full mt-6">
-                                    <h3 class="text-2xl font-black text-slate-800 leading-tight">Profilaxia PEP</h3>
+                                    <h3 class="text-2xl font-black text-slate-800 leading-tight font-bold">Profilaxia PEP</h3>
                                     <p class="text-slate-500 text-sm mt-3 leading-relaxed font-medium">Protocolo pós-exposição de risco em ambiente de violência.</p>
                                 </div>
                                 <div class="w-full border-t border-slate-50 pt-6 mt-6 flex justify-between items-center">
@@ -145,7 +145,7 @@
                     </div>
                 </div>
 
-                <!-- Card 2: SINAN -->
+                <!-- Card 2: SINAN (EXPANDIDO) -->
                 <div class="protocol-card" data-category="gestao" data-id="p2" data-date="2026-03-02">
                     <div class="flip-card" onclick="window.handleCardClick(this)">
                         <div class="flip-card-inner">
@@ -155,8 +155,8 @@
                                     <span class="text-xl text-emerald-500 font-bold">🔓</span>
                                 </div>
                                 <div class="text-left w-full mt-6">
-                                    <h3 class="text-2xl font-black text-slate-800 leading-tight">Ficha SINAN</h3>
-                                    <p class="text-slate-500 text-sm mt-3 leading-relaxed font-medium">Guia técnico para notificação compulsória de violência.</p>
+                                    <h3 class="text-2xl font-black text-slate-800 leading-tight font-bold">Ficha SINAN</h3>
+                                    <p class="text-slate-500 text-sm mt-3 leading-relaxed font-medium">Notificação compulsória de violência interpessoal.</p>
                                 </div>
                                 <div class="w-full border-t border-slate-50 pt-6 mt-6 flex justify-between items-center">
                                     <div class="flex gap-4 items-center">
@@ -175,9 +175,13 @@
                                 </div>
                             </div>
                             <div class="flip-card-back">
-                                <h3 class="font-bold text-xl mb-6 uppercase">Ficha SINAN</h3>
-                                <p class="text-sm mb-8 text-blue-100 text-left leading-relaxed font-medium">Notificação compulsória em até 24h para casos de agressão sexual.</p>
-                                <button onclick="window.trackDownload(event)" class="bg-white text-blue-900 px-8 py-3 rounded-2xl font-black text-xs uppercase shadow-lg hover:bg-slate-100 transition">Baixar Guia</button>
+                                <h3 class="font-bold text-xl mb-4 uppercase">Ficha SINAN</h3>
+                                <p class="text-xs mb-4 text-blue-100 text-left leading-relaxed font-medium">Arquivos para download e consulta:</p>
+                                <div class="flex flex-col gap-2 w-full">
+                                    <a href="https://drive.google.com/file/d/1tAb4mgMavgGY-Bp0Iz3KW8AtB-wOI975/view?usp=sharing" target="_blank" onclick="event.stopPropagation()" class="bg-white text-blue-900 px-4 py-2 rounded-xl font-bold text-[10px] uppercase shadow-md hover:bg-slate-100 transition text-center">Ficha Oficial</a>
+                                    <a href="https://drive.google.com/file/d/1vml4G7XyBGAU842Zdp6eL9ctbPRq83Vm/view?usp=sharing" target="_blank" onclick="event.stopPropagation()" class="bg-white text-blue-900 px-4 py-2 rounded-xl font-bold text-[10px] uppercase shadow-md hover:bg-slate-100 transition text-center">Ficha PDF LaTeX</a>
+                                    <a href="https://drive.google.com/file/d/1u5gUY8VPs7YHUW5ov2g5R6YucCF-1Wj5/view?usp=sharing" target="_blank" onclick="event.stopPropagation()" class="bg-white text-blue-900 px-4 py-2 rounded-xl font-bold text-[10px] uppercase shadow-md hover:bg-slate-100 transition text-center">Código LaTeX</a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -194,7 +198,7 @@
                                     <span class="text-xl text-emerald-500 font-bold">🔓</span>
                                 </div>
                                 <div class="text-left w-full mt-6">
-                                    <h3 class="text-2xl font-black text-slate-800 leading-tight">Cadeia de Custódia</h3>
+                                    <h3 class="text-2xl font-black text-slate-800 leading-tight font-bold">Cadeia de Custódia</h3>
                                     <p class="text-slate-500 text-sm mt-3 leading-relaxed font-medium">Preservação de vestígios e integridade jurídica hospitalar.</p>
                                 </div>
                                 <div class="w-full border-t border-slate-50 pt-6 mt-6 flex justify-between items-center">
@@ -226,7 +230,7 @@
         </div>
     </section>
 
-    <!-- Prova Social -->
+    <!-- Social Proof Section -->
     <section class="py-24 px-6 bg-white border-y border-slate-100">
         <div class="max-w-6xl mx-auto">
             <div class="text-center mb-16">
@@ -237,13 +241,13 @@
             <div class="mt-16 text-center">
                 <button onclick="window.renderRandomTestimonials()" class="bg-blue-900 hover:bg-black text-white px-10 py-4 rounded-2xl font-black transition-all flex items-center gap-3 mx-auto uppercase text-xs tracking-widest shadow-2xl active:scale-95">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                    Gerar Novos Depoimentos
+                    Sorteia Novos Depoimentos
                 </button>
             </div>
         </div>
     </section>
 
-    <!-- Equipe Técnica -->
+    <!-- Equipe Técnica Section -->
     <section class="py-24 px-6 bg-slate-50 border-t border-slate-100">
         <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-20">
             <div class="badge-authority-container">
@@ -266,14 +270,20 @@
         </div>
     </section>
 
-    <!-- Sugestão Section -->
+    <!-- Sugestão Section com WhatsApp Link -->
     <section id="secao-sugestao" class="py-16 px-6 bg-white">
         <div class="max-w-4xl mx-auto">
             <div class="bg-slate-50 p-10 rounded-[2.5rem] shadow-xl border border-slate-200">
-                <h2 class="text-3xl font-black text-slate-900 mb-4 tracking-tighter">Sugerir Protocolos</h2>
+                <h2 class="text-3xl font-black text-slate-900 mb-4 tracking-tighter text-center">Sugerir Protocolos</h2>
+                <p class="text-slate-600 mb-8 font-medium leading-relaxed text-center">
+                    Contribua para a expansão da curadoria da nossa equipa técnica sugerindo novos temas.
+                </p>
                 <div class="flex flex-col gap-4">
-                    <textarea id="suggestion-text" rows="4" class="w-full p-5 border-2 border-slate-100 rounded-2xl outline-none focus:border-blue-900 transition-all shadow-inner font-medium" placeholder="Que protocolo técnico gostaria de ver aqui?"></textarea>
-                    <button onclick="window.submitSuggestion()" class="bg-blue-900 text-white py-4 rounded-2xl font-black hover:bg-black transition-all shadow-lg active:scale-95 uppercase tracking-wider">Enviar para Equipe Técnica</button>
+                    <textarea id="suggestion-text" rows="4" class="w-full p-5 border-2 border-slate-100 rounded-2xl outline-none focus:border-blue-900 transition-all shadow-inner font-medium" placeholder="Escreva aqui a sua sugestão técnica..."></textarea>
+                    <button onclick="window.sendWhatsAppSuggestion()" class="bg-emerald-600 text-white py-4 rounded-2xl font-black hover:bg-emerald-700 transition-all shadow-lg active:scale-95 uppercase tracking-wider flex items-center justify-center gap-3">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.246 2.248 3.484 5.232 3.483 8.413-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.5-5.688-1.448l-6.308 1.656zm6.29-4.139c1.52.907 3.013 1.362 4.6 1.363 5.398 0 9.786-4.392 9.788-9.789 0-2.614-1.02-5.074-2.871-6.928-1.851-1.854-4.312-2.87-6.921-2.87-5.398 0-9.786 4.391-9.789 9.789 0 1.761.473 3.33 1.371 4.757l-1.092 3.985 4.093-1.073zm12.193-6.311c-.133-.223-.489-.356-.845-.533-.356-.178-2.106-1.039-2.434-1.15-.328-.111-.567-.167-.801.178-.234.344-.912 1.15-1.112 1.372-.2.222-.4.244-.756.066-.356-.178-1.503-.554-2.862-1.166-.334-.15-.588-.249-.788-.313-.334-.106-.638-.091-.878-.053-.269.042-.845.344-1.023.689-.178.344-.178.638-.122.689.056.051.21.083.434.195.222.111 1.312.646 1.512.718.2.072.334.108.467.311.134.202.134.588.067.791-.067.202-.267.356-.467.58-.2.223-.423.498-.603.687-.183.189-.373.395-.162.755.21.36.933 1.54 2.003 2.493 1.38 1.229 2.545 1.611 2.912 1.782.367.171.583.143.793-.105.21-.247.9-1.047 1.142-1.403.242-.356.484-.3.811-.178.328.122 2.1.989 2.462 1.166.362.178.604.267.693.423.089.156.089.89-.223 1.167z"/></svg>
+                        Enviar Sugestão via WhatsApp
+                    </button>
                 </div>
             </div>
         </div>
@@ -281,15 +291,13 @@
 
     <!-- Footer -->
     <footer class="bg-slate-950 text-white py-12 px-6 text-center">
-        <p class="text-slate-500 text-[10px] uppercase font-medium tracking-widest">Veridicus I.A v4.1.0 Standalone | Time Os Caras da TI</p>
+        <p class="text-slate-500 text-[10px] uppercase font-medium tracking-widest">Veridicus I.A v4.3.0 Standalone | Time Os Caras da TI</p>
     </footer>
 
     <!-- Toast UI -->
     <div id="toast" class="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-blue-900 text-white px-8 py-4 rounded-2xl shadow-2xl z-[1100] hidden font-bold text-sm uppercase">Mensagem</div>
 
     <script>
-        // --- LOGICA STANDALONE (CLIENT-SIDE ONLY) ---
-        
         const testimonialPool = [
             { text: "Decisões seguras no plantão são cruciais. Os protocolos do Veridicus são impecáveis.", name: "Dra. Ana Silva", role: "Médica Emergencista", initial: "AS" },
             { text: "Reduzimos as falhas na notificação compulsória com o guia técnico do portal.", name: "Enf. Carlos Medeiros", role: "Gestor Hospitalar", initial: "CM" },
@@ -298,7 +306,6 @@
             { text: "Material técnico direto ao ponto. Essencial para o plantão de urgência.", name: "Enf. Marcos Lima", role: "Coord. de Emergência", initial: "ML" }
         ];
 
-        // Favoritos locais
         let localFavorites = JSON.parse(localStorage.getItem('veridicus_favs')) || [];
         let localLikes = JSON.parse(localStorage.getItem('veridicus_likes')) || {};
 
@@ -310,13 +317,10 @@
             e.stopPropagation();
             const span = document.getElementById(`likes-${id}`);
             const icon = e.currentTarget.querySelector('svg');
-            
             icon.classList.add('heart-active');
             setTimeout(() => icon.classList.remove('heart-active'), 400);
-            
             let current = parseInt(span.innerText) || 0;
             span.innerText = current + 1;
-            
             localLikes[id] = current + 1;
             localStorage.setItem('veridicus_likes', JSON.stringify(localLikes));
             window.showToast("Relevância Registada!");
@@ -326,7 +330,6 @@
             e.stopPropagation();
             const toggle = document.getElementById(`fav-toggle-${id}`);
             const index = localFavorites.indexOf(id);
-            
             if (index > -1) {
                 localFavorites.splice(index, 1);
                 toggle.classList.replace('active', 'inactive');
@@ -346,17 +349,14 @@
             });
             btn.classList.add('active');
             btn.classList.remove('text-slate-500', 'bg-white', 'border-slate-200');
-
             const cards = Array.from(document.querySelectorAll('.protocol-card'));
             cards.forEach(card => {
                 const id = card.dataset.id;
-                const cat = card.dataset.category;
                 const isFav = localFavorites.includes(id);
-                
                 card.style.display = "none";
                 if (criteria === 'all' || criteria === 'recent') card.style.display = "block";
                 else if (criteria === 'favs' && isFav) card.style.display = "block";
-                else if (criteria === cat) card.style.display = "block";
+                else if (criteria === card.dataset.category) card.style.display = "block";
             });
         };
 
@@ -374,16 +374,20 @@
             });
         };
 
-        window.trackDownload = function(e) {
-            e.stopPropagation();
-            window.showToast("Iniciando download do protocolo...");
+        window.sendWhatsAppSuggestion = function() {
+            const text = document.getElementById('suggestion-text').value;
+            if (!text) return window.showToast("Escreva a sua sugestão primeiro.");
+            const phoneNumber = "5531999572799";
+            const message = encodeURIComponent(`Olá Equipe Técnica Veridicus!\n\nTenho uma sugestão de tema/protocolo para a Rede:\n\n"${text}"`);
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+            window.open(whatsappUrl, '_blank');
+            document.getElementById('suggestion-text').value = "";
+            window.showToast("A abrir o WhatsApp...");
         };
 
-        window.submitSuggestion = function() {
-            const text = document.getElementById('suggestion-text').value;
-            if (!text) return window.showToast("Escreva algo primeiro.");
-            document.getElementById('suggestion-text').value = "";
-            window.showToast("Sugestão enviada à Equipe Técnica!");
+        window.trackDownload = function(e) {
+            e.stopPropagation();
+            window.showToast("A iniciar download...");
         };
 
         window.showToast = function(m) { 
@@ -392,22 +396,17 @@
             setTimeout(() => t.classList.add("hidden"), 3000); 
         };
 
-        // Inicialização de estados locais
         function initApp() {
             window.renderRandomTestimonials();
-            
-            // Carregar favoritos e likes salvos no localStorage
             localFavorites.forEach(id => {
                 const toggle = document.getElementById(`fav-toggle-${id}`);
                 if (toggle) toggle.classList.replace('inactive', 'active');
             });
-
             Object.keys(localLikes).forEach(id => {
                 const span = document.getElementById(`likes-${id}`);
                 if (span) span.innerText = localLikes[id];
             });
         }
-
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
