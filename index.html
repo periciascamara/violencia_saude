@@ -45,9 +45,18 @@
         .fav-toggle.active .fav-dot { transform: translateX(24px); }
 
         .heart-active { color: #ef4444 !important; fill: #ef4444 !important; transform: scale(1.4); transition: 0.3s; }
-        .badge-authority-container { position: relative; width: 180px; height: 180px; display: flex; align-items: center; justify-content: center; }
-        .badge-authority { background: linear-gradient(145deg, #1e3a8a, #1e40af); border: 3px solid #fbbf24; border-radius: 50%; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; color: white; font-size: 0.75rem; font-weight: 800; padding: 15px; box-shadow: 0 15px 35px rgba(30, 58, 138, 0.4); text-transform: uppercase; letter-spacing: 0.05em; line-height: 1.2; z-index: 2; }
-        .badge-glow { position: absolute; width: 110%; height: 110%; background: radial-gradient(circle, rgba(251,191,36,0.15) 0%, rgba(255,255,255,0) 70%); border-radius: 50%; z-index: 1; animation: pulse-glow 3s infinite; }
+        
+        /* Badge de Autoridade Ajustado */
+        .badge-authority-container { 
+            position: relative; 
+            width: 220px; 
+            height: 220px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            overflow: visible;
+        }
+        .badge-glow { position: absolute; width: 120%; height: 120%; background: radial-gradient(circle, rgba(251,191,36,0.2) 0%, rgba(255,255,255,0) 70%); border-radius: 50%; z-index: 1; animation: pulse-glow 3s infinite; }
         @keyframes pulse-glow { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 0.8; } }
 
         .testimonial-card { @apply bg-white p-8 rounded-3xl border border-slate-100 shadow-sm transition-all duration-500 hover:shadow-lg; }
@@ -81,7 +90,7 @@
 
             <div class="pt-6 border-t border-white/10 mt-6">
                 <p class="text-xs md:text-sm text-blue-200/60 font-medium tracking-wide">
-                    Oferecido por <a href="https://periciascamara.editoraviva.art.br/veridicusinteligencia" target="_blank" class="text-blue-400 hover:text-white underline transition font-bold decoration-2">Veridicus I.A</a> — plataforma de apuração da verdade.
+                    Oferecido por <a href="https://periciascamara.editoraviva.art.br/veridicusinteligencia" target="_blank" class="text-blue-400 hover:text-white underline transition font-bold decoration-2">Veridicus I.A</a> — plataforma especializada na apuração da verdade.
                 </p>
             </div>
         </div>
@@ -137,15 +146,19 @@
                                 </div>
                             </div>
                             <div class="flip-card-back">
-                                <h3 class="font-bold text-xl mb-6 uppercase">Protocolo PEP</h3>
-                                <p class="text-sm mb-8 text-blue-100 text-left leading-relaxed font-medium">Profilaxia para HIV e ISTs em até 72h. Esquema completo por 28 dias.</p>
-                                <button onclick="window.trackDownload(event)" class="bg-white text-blue-900 px-8 py-3 rounded-2xl font-black text-xs uppercase shadow-lg hover:bg-slate-100 transition">Baixar PDF</button>
+                                <h3 class="font-bold text-xl mb-4 uppercase">Protocolo PEP</h3>
+                                <p class="text-xs mb-4 text-blue-100 text-left leading-relaxed font-medium">Documentos e Exames:</p>
+                                <div class="flex flex-col gap-2 w-full text-left">
+                                    <a href="https://drive.google.com/file/d/1I9Wii-Bhu_JT3dQsDL2q_-tTXbKeby2R/view?usp=sharing" target="_blank" onclick="event.stopPropagation()" class="bg-white text-blue-900 px-4 py-2 rounded-xl font-bold text-[10px] uppercase shadow-md hover:bg-slate-100 transition text-center">Formulário CAT (INSS)</a>
+                                    <a href="https://drive.google.com/file/d/18h34f9t3AN7txWF2rcindZSV2VuUfG92/view?usp=sharing" target="_blank" onclick="event.stopPropagation()" class="bg-white text-blue-900 px-4 py-2 rounded-xl font-bold text-[10px] uppercase shadow-md hover:bg-slate-100 transition text-center">Exames Complementares</a>
+                                    <a href="https://drive.google.com/file/d/17YSTOEydSO64NOf2tQIqE36QnP0wcW93/view?usp=sharing" target="_blank" onclick="event.stopPropagation()" class="bg-white text-blue-900 px-4 py-2 rounded-xl font-bold text-[10px] uppercase shadow-md hover:bg-slate-100 transition text-center">Notificação Exp. Biológica</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Card 2: SINAN (EXPANDIDO) -->
+                <!-- Card 2: SINAN -->
                 <div class="protocol-card" data-category="gestao" data-id="p2" data-date="2026-03-02">
                     <div class="flip-card" onclick="window.handleCardClick(this)">
                         <div class="flip-card-inner">
@@ -187,7 +200,49 @@
                     </div>
                 </div>
 
-                <!-- Card 3: Custódia (Construção) -->
+                <!-- Card 3: Suicídio (NOVO) -->
+                <div class="protocol-card" data-category="clinico" data-id="p4" data-date="2026-03-04">
+                    <div class="flip-card" onclick="window.handleCardClick(this)">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="flex justify-between items-start w-full">
+                                    <span class="bg-red-100 text-red-700 text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-wider">Urgência Psicológica</span>
+                                    <span class="text-xl text-emerald-500 font-bold">🔓</span>
+                                </div>
+                                <div class="text-left w-full mt-6">
+                                    <h3 class="text-2xl font-black text-slate-800 leading-tight font-bold">Atendimento Suicídio</h3>
+                                    <p class="text-slate-500 text-sm mt-3 leading-relaxed font-medium">Protocolo de avaliação de risco e acolhimento imediato.</p>
+                                </div>
+                                <div class="w-full border-t border-slate-50 pt-6 mt-6 flex justify-between items-center">
+                                    <div class="flex gap-4 items-center">
+                                        <button onclick="window.handleVote(event, 'p4')" class="flex items-center gap-2 text-slate-400 hover:text-red-500 transition-all duration-300">
+                                            <svg class="w-6 h-6 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                                            <span class="text-xs font-black count-display" id="likes-p4">0</span>
+                                        </button>
+                                        <div class="flex items-center gap-2 ml-3">
+                                            <span class="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Fav</span>
+                                            <div onclick="window.handleFav(event, 'p4')" id="fav-toggle-p4" class="fav-toggle inactive">
+                                                <span class="fav-dot"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest font-bold">Abrir</p>
+                                </div>
+                            </div>
+                            <div class="flip-card-back">
+                                <h3 class="font-bold text-xl mb-4 uppercase">Manejo de Crise</h3>
+                                <p class="text-xs mb-4 text-blue-100 text-left leading-relaxed font-medium">Documentos de Referência:</p>
+                                <div class="flex flex-col gap-2 w-full">
+                                    <a href="#" onclick="event.stopPropagation(); window.showToast('Manual em carregamento...')" class="bg-white text-blue-900 px-4 py-2 rounded-xl font-bold text-[10px] uppercase shadow-md hover:bg-slate-100 transition text-center">Manual de Prevenção (MS)</a>
+                                    <a href="#" onclick="event.stopPropagation(); window.showToast('Escala em carregamento...')" class="bg-white text-blue-900 px-4 py-2 rounded-xl font-bold text-[10px] uppercase shadow-md hover:bg-slate-100 transition text-center">Escala de Risco</a>
+                                    <a href="#" onclick="event.stopPropagation(); window.showToast('Fluxo em carregamento...')" class="bg-white text-blue-900 px-4 py-2 rounded-xl font-bold text-[10px] uppercase shadow-md hover:bg-slate-100 transition text-center">Fluxo Encaminhamento</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4: Custódia (Construção) -->
                 <div class="protocol-card" data-category="pericia" data-id="p3" data-date="2026-03-03" data-construction="true">
                     <div class="flip-card" onclick="window.handleCardClick(this)">
                         <div class="flip-card-inner">
@@ -230,7 +285,7 @@
         </div>
     </section>
 
-    <!-- Social Proof Section -->
+    <!-- Prova Social -->
     <section class="py-24 px-6 bg-white border-y border-slate-100">
         <div class="max-w-6xl mx-auto">
             <div class="text-center mb-16">
@@ -241,7 +296,7 @@
             <div class="mt-16 text-center">
                 <button onclick="window.renderRandomTestimonials()" class="bg-blue-900 hover:bg-black text-white px-10 py-4 rounded-2xl font-black transition-all flex items-center gap-3 mx-auto uppercase text-xs tracking-widest shadow-2xl active:scale-95">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                    Sorteia Novos Depoimentos
+                    Gerar Novos Depoimentos
                 </button>
             </div>
         </div>
@@ -252,7 +307,8 @@
         <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-20">
             <div class="badge-authority-container">
                 <div class="badge-glow"></div>
-                <div class="badge-authority">Rede de Apoio à Atenção e Gestão de Violência em Saúde</div>
+                <!-- LOCAL PARA TROCAR A IMAGEM DO DISTINTIVO -->
+                <img src="logoviolencia.png" alt="Distintivo Gestão da Violência" class="w-full h-full object-cover rounded-full shadow-2xl z-10 border-4 border-white">
             </div>
             <div class="text-center md:text-left">
                 <h2 class="text-4xl font-black text-slate-900 mb-6 tracking-tighter">Equipe Técnica</h2>
@@ -272,14 +328,14 @@
 
     <!-- Sugestão Section com WhatsApp Link -->
     <section id="secao-sugestao" class="py-16 px-6 bg-white">
-        <div class="max-w-4xl mx-auto">
+        <div class="max-w-4xl mx-auto text-center">
             <div class="bg-slate-50 p-10 rounded-[2.5rem] shadow-xl border border-slate-200">
-                <h2 class="text-3xl font-black text-slate-900 mb-4 tracking-tighter text-center">Sugerir Protocolos</h2>
-                <p class="text-slate-600 mb-8 font-medium leading-relaxed text-center">
+                <h2 class="text-3xl font-black text-slate-900 mb-4 tracking-tighter">Sugerir Protocolos</h2>
+                <p class="text-slate-600 mb-8 font-medium leading-relaxed">
                     Contribua para a expansão da curadoria da nossa equipa técnica sugerindo novos temas.
                 </p>
                 <div class="flex flex-col gap-4">
-                    <textarea id="suggestion-text" rows="4" class="w-full p-5 border-2 border-slate-100 rounded-2xl outline-none focus:border-blue-900 transition-all shadow-inner font-medium" placeholder="Escreva aqui a sua sugestão técnica..."></textarea>
+                    <textarea id="suggestion-text" rows="4" class="w-full p-5 border-2 border-slate-100 rounded-2xl outline-none focus:border-blue-900 transition-all shadow-inner font-medium" placeholder="Que protocolo técnico gostaria de ver aqui?"></textarea>
                     <button onclick="window.sendWhatsAppSuggestion()" class="bg-emerald-600 text-white py-4 rounded-2xl font-black hover:bg-emerald-700 transition-all shadow-lg active:scale-95 uppercase tracking-wider flex items-center justify-center gap-3">
                         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.246 2.248 3.484 5.232 3.483 8.413-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.5-5.688-1.448l-6.308 1.656zm6.29-4.139c1.52.907 3.013 1.362 4.6 1.363 5.398 0 9.786-4.392 9.788-9.789 0-2.614-1.02-5.074-2.871-6.928-1.851-1.854-4.312-2.87-6.921-2.87-5.398 0-9.786 4.391-9.789 9.789 0 1.761.473 3.33 1.371 4.757l-1.092 3.985 4.093-1.073zm12.193-6.311c-.133-.223-.489-.356-.845-.533-.356-.178-2.106-1.039-2.434-1.15-.328-.111-.567-.167-.801.178-.234.344-.912 1.15-1.112 1.372-.2.222-.4.244-.756.066-.356-.178-1.503-.554-2.862-1.166-.334-.15-.588-.249-.788-.313-.334-.106-.638-.091-.878-.053-.269.042-.845.344-1.023.689-.178.344-.178.638-.122.689.056.051.21.083.434.195.222.111 1.312.646 1.512.718.2.072.334.108.467.311.134.202.134.588.067.791-.067.202-.267.356-.467.58-.2.223-.423.498-.603.687-.183.189-.373.395-.162.755.21.36.933 1.54 2.003 2.493 1.38 1.229 2.545 1.611 2.912 1.782.367.171.583.143.793-.105.21-.247.9-1.047 1.142-1.403.242-.356.484-.3.811-.178.328.122 2.1.989 2.462 1.166.362.178.604.267.693.423.089.156.089.89-.223 1.167z"/></svg>
                         Enviar Sugestão via WhatsApp
@@ -291,7 +347,7 @@
 
     <!-- Footer -->
     <footer class="bg-slate-950 text-white py-12 px-6 text-center">
-        <p class="text-slate-500 text-[10px] uppercase font-medium tracking-widest">Veridicus I.A v4.3.0 Standalone | Time Os Caras da TI</p>
+        <p class="text-slate-500 text-[10px] uppercase font-medium tracking-widest">Veridicus I.A v4.6.0 Standalone | Time Os Caras da TI</p>
     </footer>
 
     <!-- Toast UI -->
@@ -301,17 +357,15 @@
         const testimonialPool = [
             { text: "Decisões seguras no plantão são cruciais. Os protocolos do Veridicus são impecáveis.", name: "Dra. Ana Silva", role: "Médica Emergencista", initial: "AS" },
             { text: "Reduzimos as falhas na notificação compulsória com o guia técnico do portal.", name: "Enf. Carlos Medeiros", role: "Gestor Hospitalar", initial: "CM" },
-            { text: "A verdade pericial protegida. A preservação da cadeia de custódia aqui é excelente.", name: "Dr. Ricardo Lima", role: "Perito Médico", initial: "RL" },
             { text: "Rigor pericial que protege o profissional na ponta. Recomendo fortemente.", name: "Dra. Paula Rocha", role: "Perita Legista", initial: "PR" },
+            { text: "Segurança jurídica real para situações críticas de acolhimento à vítima.", name: "Dr. Fábio Souza", role: "Diretor Clínico", initial: "FS" },
             { text: "Material técnico direto ao ponto. Essencial para o plantão de urgência.", name: "Enf. Marcos Lima", role: "Coord. de Emergência", initial: "ML" }
         ];
 
         let localFavorites = JSON.parse(localStorage.getItem('veridicus_favs')) || [];
         let localLikes = JSON.parse(localStorage.getItem('veridicus_likes')) || {};
 
-        window.handleCardClick = function(card) {
-            card.classList.toggle('flipped');
-        };
+        window.handleCardClick = function(card) { card.classList.toggle('flipped'); };
 
         window.handleVote = function(e, id) {
             e.stopPropagation();
@@ -352,11 +406,12 @@
             const cards = Array.from(document.querySelectorAll('.protocol-card'));
             cards.forEach(card => {
                 const id = card.dataset.id;
+                const cat = card.dataset.category;
                 const isFav = localFavorites.includes(id);
                 card.style.display = "none";
                 if (criteria === 'all' || criteria === 'recent') card.style.display = "block";
                 else if (criteria === 'favs' && isFav) card.style.display = "block";
-                else if (criteria === card.dataset.category) card.style.display = "block";
+                else if (criteria === cat) card.style.display = "block";
             });
         };
 
@@ -385,10 +440,7 @@
             window.showToast("A abrir o WhatsApp...");
         };
 
-        window.trackDownload = function(e) {
-            e.stopPropagation();
-            window.showToast("A iniciar download...");
-        };
+        window.trackDownload = function(e) { e.stopPropagation(); window.showToast("Protocolo solicitado."); };
 
         window.showToast = function(m) { 
             const t = document.getElementById("toast"); 
