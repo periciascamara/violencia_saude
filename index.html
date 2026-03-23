@@ -1,96 +1,448 @@
 <!DOCTYPE html>
-<html lang="pt-pt">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Veridicus I.A - Gestão e Apoio</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap');
-        
-        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; overflow-x: hidden; }
-        
-        /* --- PERSONALIZAÇÃO DA IMAGEM --- */
-        .hero-section { position: relative; background-color: #0f172a; overflow: hidden; }
-        .hero-bg-image { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            background-image: url('foto1.jpg'); 
-            background-size: cover; background-position: center; opacity: 0.15; z-index: 0; 
+
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
         }
-        .hero-content { position: relative; z-index: 10; }
+
+        /* --- PERSONALIZAÇÃO DA IMAGEM --- */
+        .hero-section {
+            position: relative;
+            background-color: #0f172a;
+            overflow: hidden;
+        }
+
+        .hero-bg-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('foto1.jpg');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15;
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+        }
 
         /* Estilos dos Cartões (Flip) */
-        .flip-card { background-color: transparent; width: 100%; height: 420px; perspective: 1000px; cursor: pointer; }
-        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; }
-        .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
-        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 1.5rem; display: flex; flex-direction: column; padding: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.08); overflow: hidden; }
-        .flip-card-front { background: white; border: 1px solid #f1f5f9; justify-content: space-between; }
-        .flip-card-back { background: #1e293b; color: white; transform: rotateY(180deg); justify-content: center; }
+        .flip-card {
+            background-color: transparent;
+            width: 100%;
+            height: 420px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front,
+        .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .flip-card-front {
+            background: white;
+            border: 1px solid #f1f5f9;
+            justify-content: space-between;
+        }
+
+        .flip-card-back {
+            background: #1e293b;
+            color: white;
+            transform: rotateY(180deg);
+            justify-content: center;
+        }
 
         /* Tarja de Construção */
-        .construction-ribbon { position: absolute; top: 20px; right: -35px; background: #f59e0b; color: white; padding: 5px 40px; font-size: 10px; font-weight: 900; text-transform: uppercase; transform: rotate(45deg); z-index: 50; box-shadow: 0 2px 10px rgba(0,0,0,0.1); letter-spacing: 1px; pointer-events: none; }
-
-        /* UX: Destaque de Filtro Activo */
-        .filter-btn { @apply px-5 py-2.5 rounded-xl border border-slate-200 text-slate-500 bg-white text-sm font-bold transition-all duration-300 hover:border-blue-300; }
-        .filter-btn.active { 
-            background-color: #1d4ed8 !important; color: white !important; border-color: #1d4ed8 !important; 
-            box-shadow: 0 10px 20px -5px rgba(29, 78, 216, 0.5); transform: scale(1.1); z-index: 20; 
+        .construction-ribbon {
+            position: absolute;
+            top: 20px;
+            right: -35px;
+            background: #f59e0b;
+            color: white;
+            padding: 5px 40px;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            transform: rotate(45deg);
+            z-index: 50;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            letter-spacing: 1px;
+            pointer-events: none;
         }
-        
-        /* Toggle Deslizante (Favoritos) */
-        .fav-toggle { position: relative; display: inline-flex; height: 26px; width: 48px; align-items: center; border-radius: 9999px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; border: 2px solid transparent; }
-        .fav-toggle.active { background-color: #10b981; }
-        .fav-toggle.inactive { background-color: #e2e8f0; }
-        .fav-dot { display: inline-block; height: 18px; width: 18px; transform: translateX(2px); border-radius: 9999px; background-color: white; transition: transform 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .fav-toggle.active .fav-dot { transform: translateX(24px); }
 
-        .heart-active { color: #ef4444 !important; fill: #ef4444 !important; transform: scale(1.4); transition: 0.3s; }
-        
+        /* UX: Destaque de Filtro Ativo */
+        .filter-btn {
+            @apply px-5 py-2.5 rounded-xl border border-slate-200 text-slate-500 bg-white text-sm font-bold transition-all duration-300 hover:border-blue-300;
+        }
+
+        .filter-btn.active {
+            background-color: #1d4ed8 !important;
+            color: white !important;
+            border-color: #1d4ed8 !important;
+            box-shadow: 0 10px 20px -5px rgba(29, 78, 216, 0.5);
+            transform: scale(1.1);
+            z-index: 20;
+        }
+
+        /* Toggle Deslizante (Favoritos) */
+        .fav-toggle {
+            position: relative;
+            display: inline-flex;
+            height: 26px;
+            width: 48px;
+            align-items: center;
+            border-radius: 9999px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .fav-toggle.active {
+            background-color: #10b981;
+        }
+
+        .fav-toggle.inactive {
+            background-color: #e2e8f0;
+        }
+
+        .fav-dot {
+            display: inline-block;
+            height: 18px;
+            width: 18px;
+            transform: translateX(2px);
+            border-radius: 9999px;
+            background-color: white;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .fav-toggle.active .fav-dot {
+            transform: translateX(24px);
+        }
+
+        .heart-active {
+            color: #ef4444 !important;
+            fill: #ef4444 !important;
+            transform: scale(1.4);
+            transition: 0.3s;
+        }
+
         /* Badge de Autoridade Ajustado */
-        .badge-authority-container { 
-            position: relative; 
-            width: 220px; 
-            height: 220px; 
-            display: flex; 
-            align-items: center; 
+        .badge-authority-container {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            display: flex;
+            align-items: center;
             justify-content: center;
             overflow: visible;
         }
-        .badge-glow { position: absolute; width: 120%; height: 120%; background: radial-gradient(circle, rgba(251,191,36,0.2) 0%, rgba(255,255,255,0) 70%); border-radius: 50%; z-index: 1; animation: pulse-glow 3s infinite; }
-        @keyframes pulse-glow { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 0.8; } }
 
-        .testimonial-card { @apply bg-white p-8 rounded-3xl border border-slate-100 shadow-sm transition-all duration-500 hover:shadow-lg; }
+        .badge-glow {
+            position: absolute;
+            width: 120%;
+            height: 120%;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.2) 0%, rgba(255, 255, 255, 0) 70%);
+            border-radius: 50%;
+            z-index: 1;
+            animation: pulse-glow 3s infinite;
+        }
+
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+        }
+
+        .testimonial-card {
+            @apply bg-white p-8 rounded-3xl border border-slate-100 shadow-sm transition-all duration-500 hover:shadow-lg;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+        }
+
+        .modal-overlay.hidden {
+            display: none;
+        }
+
+        .modal-box {
+            background: white;
+            border-radius: 2rem;
+            padding: 3rem;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+            transform: translateY(30px);
+            transition: transform 0.4s;
+        }
+
+        .modal-overlay.show .modal-box {
+            transform: translateY(0);
+        }
+
+        .cpf-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 1rem;
+            font-size: 18px;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: 2px;
+            outline: none;
+            transition: border-color 0.3s;
+            font-family: 'Inter', monospace;
+        }
+
+        .cpf-input:focus {
+            border-color: #1d4ed8;
+        }
+
+        .cpf-input.error {
+            border-color: #ef4444;
+            animation: shake 0.4s;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0)
+            }
+
+            25% {
+                transform: translateX(-8px)
+            }
+
+            75% {
+                transform: translateX(8px)
+            }
+        }
+
+        .user-bar {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-pill {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 6px 16px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .reg-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.75rem;
+            font-size: 14px;
+            font-weight: 600;
+            outline: none;
+            transition: border-color 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .reg-input:focus {
+            border-color: #10b981;
+        }
     </style>
 </head>
+
 <body class="bg-slate-50 text-slate-900">
+
+    <!-- Modal de Login / Cadastro CPF -->
+    <div id="login-modal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <!-- STEP 1: CPF -->
+            <div id="modal-step-cpf">
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-2xl mb-4">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-black text-slate-900 tracking-tight">Acesse a Plataforma</h2>
+                    <p class="text-slate-500 text-sm mt-2 font-medium">Insira seu CPF para entrar ou cadastrar</p>
+                </div>
+                <div class="mb-6">
+                    <input type="text" id="cpf-input" class="cpf-input" placeholder="000.000.000-00" maxlength="14"
+                        autocomplete="off">
+                    <p id="cpf-error" class="text-red-500 text-xs font-bold mt-2 hidden text-center">CPF inválido.
+                        Insira 11 dígitos.</p>
+                </div>
+                <button onclick="window.doLogin()"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-black transition-all shadow-lg active:scale-95 uppercase text-sm tracking-widest">Continuar</button>
+            </div>
+
+            <!-- STEP 2: Cadastro Completo (novo usuário) -->
+            <div id="modal-step-register" class="hidden">
+                <div class="text-center mb-6">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-emerald-100 rounded-2xl mb-4">
+                        <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-black text-slate-900 tracking-tight">Primeiro Acesso</h2>
+                    <p class="text-slate-500 text-sm mt-2 font-medium">Complete seu cadastro para continuar</p>
+                    <p class="text-blue-600 text-xs font-bold mt-1" id="register-cpf-display"></p>
+                </div>
+                <div class="space-y-3 mb-6">
+                    <input type="text" id="reg-nome" class="reg-input" placeholder="Nome completo *" required>
+                    <input type="tel" id="reg-telefone" class="reg-input" placeholder="Telefone (DDD + número)"
+                        maxlength="15">
+                    <input type="email" id="reg-email" class="reg-input" placeholder="E-mail">
+                    <input type="text" id="reg-profissao" class="reg-input" placeholder="Profissão *" required>
+                    <p id="reg-error" class="text-red-500 text-xs font-bold hidden text-center">Preencha nome e
+                        profissão.</p>
+                </div>
+                <button onclick="window.doRegister()"
+                    class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4 rounded-2xl font-black transition-all shadow-lg active:scale-95 uppercase text-sm tracking-widest">Cadastrar</button>
+                <button onclick="window.backToStep1()"
+                    class="w-full text-slate-400 hover:text-slate-600 py-3 font-bold text-xs uppercase tracking-wider mt-3 transition">←
+                    Voltar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Bar (logado) -->
+    <div id="user-bar" class="user-bar fixed top-0 left-0 right-0 z-[1500] hidden">
+        <div class="max-w-7xl mx-auto px-6 py-2 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <span class="user-pill" id="user-cpf-display">***.***.***-00</span>
+                <span class="text-white text-xs font-bold hidden" id="user-name-display"></span>
+                <a href="dashboard.html" id="dashboard-link"
+                    class="text-blue-400 hover:text-blue-300 text-[10px] font-black uppercase tracking-widest transition flex items-center gap-1 hidden">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                        </path>
+                    </svg>
+                    Dashboard
+                </a>
+            </div>
+            <button onclick="window.doLogout()"
+                class="text-red-400 hover:text-red-300 text-[10px] font-black uppercase tracking-widest transition">Sair</button>
+        </div>
+    </div>
+
+    <!-- Login Bar (deslogado) -->
+    <div id="login-bar" class="user-bar fixed top-0 left-0 right-0 z-[1500] hidden">
+        <div class="max-w-7xl mx-auto px-6 py-2 flex items-center justify-between">
+            <span class="text-slate-400 text-xs font-bold">Você não está logado</span>
+            <button onclick="window.showLoginModal()"
+                class="bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-lg transition">Entrar
+                com CPF</button>
+        </div>
+    </div>
 
     <!-- Hero Section -->
     <header class="hero-section text-white pt-24 pb-44 px-6">
         <div class="hero-bg-image"></div>
         <div class="max-w-6xl mx-auto text-center hero-content">
-            <div class="inline-block bg-blue-500/20 text-blue-200 px-4 py-1 rounded-full text-xs font-bold mb-6 tracking-widest border border-blue-500/30 backdrop-blur-md uppercase">
+            <div
+                class="inline-block bg-blue-500/20 text-blue-200 px-4 py-1 rounded-full text-xs font-bold mb-6 tracking-widest border border-blue-500/30 backdrop-blur-md uppercase">
                 Gestão da Violência na Saúde
             </div>
             <h1 class="text-4xl md:text-7xl font-black leading-tight mb-8 tracking-tighter">
                 Rede de Apoio <br><span class="text-blue-400">& Cuidado</span>
             </h1>
             <p class="text-lg md:text-2xl text-slate-300 mb-8 max-w-4xl mx-auto font-medium leading-relaxed">
-                Portal técnico para suporte e gestão da violência em locais de cuidado à saúde. Acesso livre para profissionais.
+                Portal técnico para suporte e gestão da violência em locais de cuidado à saúde. Acesso livre para
+                profissionais.
             </p>
-            
+
             <div class="mb-10 max-w-2xl mx-auto">
                 <p class="text-sm md:text-base text-blue-100/90 font-medium mb-6 leading-relaxed">
-                    Se gostou da nossa plataforma registe a sua passagem por aqui. Isso é muito importante para mantermos este serviço ativo e gratuito para si.
+                    Se gostou da nossa plataforma, registre a sua passagem por aqui. Isso é muito importante para
+                    mantermos este serviço ativo e gratuito para você.
                 </p>
-                <a href="https://capable-moustache-4a8.notion.site/eac108148c25418e9cd12c260cd68c72?pvs=105" target="_blank" class="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-black transition transform hover:scale-105 shadow-2xl uppercase text-sm tracking-widest gap-3">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                    Registe-se aqui
+                <a href="https://capable-moustache-4a8.notion.site/eac108148c25418e9cd12c260cd68c72?pvs=105"
+                    target="_blank"
+                    class="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-black transition transform hover:scale-105 shadow-2xl uppercase text-sm tracking-widest gap-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                        </path>
+                    </svg>
+                    Registre-se aqui
                 </a>
             </div>
 
             <div class="pt-6 border-t border-white/10 mt-6">
                 <p class="text-xs md:text-sm text-blue-200/60 font-medium tracking-wide">
-                    Oferecido por <a href="https://periciascamara.editoraviva.art.br/veridicusinteligencia" target="_blank" class="text-blue-400 hover:text-white underline transition font-bold decoration-2">Veridicus I.A</a> — plataforma especializada na apuração da verdade.
+                    Oferecido por <a href="https://periciascamara.editoraviva.art.br/veridicusinteligencia"
+                        target="_blank"
+                        class="text-blue-400 hover:text-white underline transition font-bold decoration-2">Veridicus
+                        I.A</a> — plataforma especializada na apuração da verdade.
                 </p>
             </div>
         </div>
@@ -99,18 +451,25 @@
     <!-- Filtros e Protocolos -->
     <section class="py-16 px-6 -mt-20 relative z-20">
         <div class="max-w-7xl mx-auto">
-            <div class="bg-white/95 backdrop-blur-md p-6 rounded-3xl shadow-2xl border border-white/50 mb-12 flex flex-col gap-6">
+            <div
+                class="bg-white/95 backdrop-blur-md p-6 rounded-3xl shadow-2xl border border-white/50 mb-12 flex flex-col gap-6">
                 <div class="flex flex-wrap items-center justify-between gap-4">
                     <div class="flex flex-wrap gap-4" id="main-filters">
-                        <button id="filter-all" class="filter-btn active" onclick="window.filterCards('all', this)">Todos</button>
-                        <button id="filter-recent" class="filter-btn" onclick="window.filterCards('recent', this)">Novidades</button>
-                        <button id="filter-favs" class="filter-btn" onclick="window.filterCards('favs', this)">Favoritos</button>
+                        <button id="filter-all" class="filter-btn active"
+                            onclick="window.filterCards('all', this)">Todos</button>
+                        <button id="filter-recent" class="filter-btn"
+                            onclick="window.filterCards('recent', this)">Novidades</button>
+                        <button id="filter-favs" class="filter-btn"
+                            onclick="window.filterCards('favs', this)">Favoritos</button>
                     </div>
                     <div class="h-10 w-px bg-slate-200 hidden md:block"></div>
                     <div class="flex flex-wrap gap-4" id="category-filters">
-                        <button id="filter-clinico" class="filter-btn" onclick="window.filterCards('clinico', this)">Clínico</button>
-                        <button id="filter-gestao" class="filter-btn" onclick="window.filterCards('gestao', this)">Gestão</button>
-                        <button id="filter-pericia" class="filter-btn" onclick="window.filterCards('pericia', this)">Perícia</button>
+                        <button id="filter-clinico" class="filter-btn"
+                            onclick="window.filterCards('clinico', this)">Clínico</button>
+                        <button id="filter-gestao" class="filter-btn"
+                            onclick="window.filterCards('gestao', this)">Gestão</button>
+                        <button id="filter-pericia" class="filter-btn"
+                            onclick="window.filterCards('pericia', this)">Perícia</button>
                     </div>
                 </div>
             </div>
@@ -122,36 +481,59 @@
                         <div class="flip-card-inner">
                             <div class="flip-card-front">
                                 <div class="flex justify-between items-start w-full">
-                                    <span class="bg-blue-100 text-blue-700 text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-wider">Urgência</span>
+                                    <span
+                                        class="bg-blue-100 text-blue-700 text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-wider">Urgência</span>
                                     <span class="text-xl text-emerald-500 font-bold">🔓</span>
                                 </div>
                                 <div class="text-left w-full mt-6">
-                                    <h3 class="text-2xl font-black text-slate-800 leading-tight font-bold">Profilaxia PEP</h3>
-                                    <p class="text-slate-500 text-sm mt-3 leading-relaxed font-medium">Protocolo pós-exposição de risco em ambiente de violência.</p>
+                                    <h3 class="text-2xl font-black text-slate-800 leading-tight font-bold">Profilaxia
+                                        PEP</h3>
+                                    <p class="text-slate-500 text-sm mt-3 leading-relaxed font-medium">Protocolo
+                                        pós-exposição de risco em ambiente de violência.</p>
                                 </div>
-                                <div class="w-full border-t border-slate-50 pt-6 mt-6 flex justify-between items-center">
+                                <div
+                                    class="w-full border-t border-slate-50 pt-6 mt-6 flex justify-between items-center">
                                     <div class="flex gap-4 items-center">
-                                        <button onclick="window.handleVote(event, 'p1')" class="flex items-center gap-2 text-slate-400 hover:text-red-500 transition-all duration-300">
-                                            <svg class="w-6 h-6 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                                        <button onclick="window.handleVote(event, 'p1')"
+                                            class="flex items-center gap-2 text-slate-400 hover:text-red-500 transition-all duration-300">
+                                            <svg class="w-6 h-6 transition-all" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
+                                                </path>
+                                            </svg>
                                             <span class="text-xs font-black count-display" id="likes-p1">12</span>
                                         </button>
                                         <div class="flex items-center gap-2 ml-3">
-                                            <span class="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Fav</span>
-                                            <div onclick="window.handleFav(event, 'p1')" id="fav-toggle-p1" class="fav-toggle inactive">
+                                            <span
+                                                class="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Fav</span>
+                                            <div onclick="window.handleFav(event, 'p1')" id="fav-toggle-p1"
+                                                class="fav-toggle inactive">
                                                 <span class="fav-dot"></span>
                                             </div>
                                         </div>
                                     </div>
-                                    <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest font-bold">Abrir</p>
+                                    <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest font-bold">
+                                        Abrir</p>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <h3 class="font-bold text-xl mb-4 uppercase">Protocolo PEP</h3>
-                                <p class="text-xs mb-4 text-blue-100 text-left leading-relaxed font-medium">Documentos e Exames:</p>
+                                <p class="text-xs mb-4 text-blue-100 text-left leading-relaxed font-medium">Documentos e
+                                    Exames:</p>
                                 <div class="flex flex-col gap-2 w-full text-left">
-                                    <a href="https://drive.google.com/file/d/1I9Wii-Bhu_JT3dQsDL2q_-tTXbKeby2R/view?usp=sharing" target="_blank" onclick="event.stopPropagation()" class="bg-white text-blue-900 px-4 py-2 rounded-xl font-bold text-[10px] uppercase shadow-md hover:bg-slate-100 transition text-center">Formulário CAT (INSS)</a>
-                                    <a href="https://drive.google.com/file/d/18h34f9t3AN7txWF2rcindZSV2VuUfG92/view?usp=sharing" target="_blank" onclick="event.stopPropagation()" class="bg-white text-blue-900 px-4 py-2 rounded-xl font-bold text-[10px] uppercase shadow-md hover:bg-slate-100 transition text-center">Exames Complementares</a>
-                                    <a href="https://drive.google.com/file/d/17YSTOEydSO64NOf2tQIqE36QnP0wcW93/view?usp=sharing" target="_blank" onclick="event.stopPropagation()" class="bg-white text-blue-900 px-4 py-2 rounded-xl font-bold text-[10px] uppercase shadow-md hover:bg-slate-100 transition text-center">Notificação Exp. Biológica</a>
+                                    <a href="https://drive.google.com/file/d/1I9Wii-Bhu_JT3dQsDL2q_-tTXbKeby2R/view?usp=sharing"
+                                        target="_blank" onclick="event.stopPropagation()"
+                                        class="bg-white text-blue-900 px-4 py-2 rounded-xl font-bold text-[10px] uppercase shadow-md hover:bg-slate-100 transition text-center">Formulário
+                                        CAT (INSS)</a>
+                                    <a href="https://drive.google.com/file/d/18h34f9t3AN7txWF2rcindZSV2VuUfG92/view?usp=sharing"
+                                        target="_blank" onclick="event.stopPropagation()"
+                                        class="bg-white text-blue-900 px-4 py-2 rounded-xl font-bold text-[10px] uppercase shadow-md hover:bg-slate-100 transition text-center">Exames
+                                        Complementares</a>
+                                    <a href="https://drive.google.com/file/d/17YSTOEydSO64NOf2tQIqE36QnP0wcW93/view?usp=sharing"
+                                        target="_blank" onclick="event.stopPropagation()"
+                                        class="bg-white text-blue-900 px-4 py-2 rounded-xl font-bold text-[10px] uppercase shadow-md hover:bg-slate-100 transition text-center">Notificação
+                                        Exp. Biológica</a>
                                 </div>
                             </div>
                         </div>
@@ -164,36 +546,59 @@
                         <div class="flip-card-inner">
                             <div class="flip-card-front">
                                 <div class="flex justify-between items-start w-full">
-                                    <span class="bg-amber-100 text-amber-700 text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-wider">Gestão</span>
+                                    <span
+                                        class="bg-amber-100 text-amber-700 text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-wider">Gestão</span>
                                     <span class="text-xl text-emerald-500 font-bold">🔓</span>
                                 </div>
                                 <div class="text-left w-full mt-6">
-                                    <h3 class="text-2xl font-black text-slate-800 leading-tight font-bold">Ficha SINAN</h3>
-                                    <p class="text-slate-500 text-sm mt-3 leading-relaxed font-medium">Notificação compulsória de violência interpessoal.</p>
+                                    <h3 class="text-2xl font-black text-slate-800 leading-tight font-bold">Ficha SINAN
+                                    </h3>
+                                    <p class="text-slate-500 text-sm mt-3 leading-relaxed font-medium">Notificação
+                                        compulsória de violência interpessoal.</p>
                                 </div>
-                                <div class="w-full border-t border-slate-50 pt-6 mt-6 flex justify-between items-center">
+                                <div
+                                    class="w-full border-t border-slate-50 pt-6 mt-6 flex justify-between items-center">
                                     <div class="flex gap-4 items-center">
-                                        <button onclick="window.handleVote(event, 'p2')" class="flex items-center gap-2 text-slate-400 hover:text-red-500 transition-all duration-300">
-                                            <svg class="w-6 h-6 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                                        <button onclick="window.handleVote(event, 'p2')"
+                                            class="flex items-center gap-2 text-slate-400 hover:text-red-500 transition-all duration-300">
+                                            <svg class="w-6 h-6 transition-all" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
+                                                </path>
+                                            </svg>
                                             <span class="text-xs font-black count-display" id="likes-p2">8</span>
                                         </button>
                                         <div class="flex items-center gap-2 ml-3">
-                                            <span class="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Fav</span>
-                                            <div onclick="window.handleFav(event, 'p2')" id="fav-toggle-p2" class="fav-toggle inactive">
+                                            <span
+                                                class="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Fav</span>
+                                            <div onclick="window.handleFav(event, 'p2')" id="fav-toggle-p2"
+                                                class="fav-toggle inactive">
                                                 <span class="fav-dot"></span>
                                             </div>
                                         </div>
                                     </div>
-                                    <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest font-bold">Abrir</p>
+                                    <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest font-bold">
+                                        Abrir</p>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <h3 class="font-bold text-xl mb-4 uppercase">Ficha SINAN</h3>
-                                <p class="text-xs mb-4 text-blue-100 text-left leading-relaxed font-medium">Arquivos para download e consulta:</p>
+                                <p class="text-xs mb-4 text-blue-100 text-left leading-relaxed font-medium">Arquivos
+                                    para download e consulta:</p>
                                 <div class="flex flex-col gap-2 w-full">
-                                    <a href="https://drive.google.com/file/d/1tAb4mgMavgGY-Bp0Iz3KW8AtB-wOI975/view?usp=sharing" target="_blank" onclick="event.stopPropagation()" class="bg-white text-blue-900 px-4 py-2 rounded-xl font-bold text-[10px] uppercase shadow-md hover:bg-slate-100 transition text-center">Ficha Oficial</a>
-                                    <a href="https://drive.google.com/file/d/1vml4G7XyBGAU842Zdp6eL9ctbPRq83Vm/view?usp=sharing" target="_blank" onclick="event.stopPropagation()" class="bg-white text-blue-900 px-4 py-2 rounded-xl font-bold text-[10px] uppercase shadow-md hover:bg-slate-100 transition text-center">Ficha PDF LaTeX</a>
-                                    <a href="https://drive.google.com/file/d/1u5gUY8VPs7YHUW5ov2g5R6YucCF-1Wj5/view?usp=sharing" target="_blank" onclick="event.stopPropagation()" class="bg-white text-blue-900 px-4 py-2 rounded-xl font-bold text-[10px] uppercase shadow-md hover:bg-slate-100 transition text-center">Código LaTeX</a>
+                                    <a href="https://drive.google.com/file/d/1tAb4mgMavgGY-Bp0Iz3KW8AtB-wOI975/view?usp=sharing"
+                                        target="_blank" onclick="event.stopPropagation()"
+                                        class="bg-white text-blue-900 px-4 py-2 rounded-xl font-bold text-[10px] uppercase shadow-md hover:bg-slate-100 transition text-center">Ficha
+                                        Oficial</a>
+                                    <a href="https://drive.google.com/file/d/1vml4G7XyBGAU842Zdp6eL9ctbPRq83Vm/view?usp=sharing"
+                                        target="_blank" onclick="event.stopPropagation()"
+                                        class="bg-white text-blue-900 px-4 py-2 rounded-xl font-bold text-[10px] uppercase shadow-md hover:bg-slate-100 transition text-center">Ficha
+                                        PDF LaTeX</a>
+                                    <a href="https://drive.google.com/file/d/1u5gUY8VPs7YHUW5ov2g5R6YucCF-1Wj5/view?usp=sharing"
+                                        target="_blank" onclick="event.stopPropagation()"
+                                        class="bg-white text-blue-900 px-4 py-2 rounded-xl font-bold text-[10px] uppercase shadow-md hover:bg-slate-100 transition text-center">Código
+                                        LaTeX</a>
                                 </div>
                             </div>
                         </div>
@@ -206,36 +611,60 @@
                         <div class="flip-card-inner">
                             <div class="flip-card-front">
                                 <div class="flex justify-between items-start w-full">
-                                    <span class="bg-red-100 text-red-700 text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-wider">Urgência Psicológica</span>
+                                    <span
+                                        class="bg-red-100 text-red-700 text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-wider">Urgência
+                                        Psicológica</span>
                                     <span class="text-xl text-emerald-500 font-bold">🔓</span>
                                 </div>
                                 <div class="text-left w-full mt-6">
-                                    <h3 class="text-2xl font-black text-slate-800 leading-tight font-bold">Atendimento Suicídio</h3>
-                                    <p class="text-slate-500 text-sm mt-3 leading-relaxed font-medium">Protocolo de avaliação de risco e acolhimento imediato.</p>
+                                    <h3 class="text-2xl font-black text-slate-800 leading-tight font-bold">Atendimento
+                                        Suicídio</h3>
+                                    <p class="text-slate-500 text-sm mt-3 leading-relaxed font-medium">Protocolo de
+                                        avaliação de risco e acolhimento imediato.</p>
                                 </div>
-                                <div class="w-full border-t border-slate-50 pt-6 mt-6 flex justify-between items-center">
+                                <div
+                                    class="w-full border-t border-slate-50 pt-6 mt-6 flex justify-between items-center">
                                     <div class="flex gap-4 items-center">
-                                        <button onclick="window.handleVote(event, 'p4')" class="flex items-center gap-2 text-slate-400 hover:text-red-500 transition-all duration-300">
-                                            <svg class="w-6 h-6 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                                        <button onclick="window.handleVote(event, 'p4')"
+                                            class="flex items-center gap-2 text-slate-400 hover:text-red-500 transition-all duration-300">
+                                            <svg class="w-6 h-6 transition-all" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
+                                                </path>
+                                            </svg>
                                             <span class="text-xs font-black count-display" id="likes-p4">0</span>
                                         </button>
                                         <div class="flex items-center gap-2 ml-3">
-                                            <span class="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Fav</span>
-                                            <div onclick="window.handleFav(event, 'p4')" id="fav-toggle-p4" class="fav-toggle inactive">
+                                            <span
+                                                class="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Fav</span>
+                                            <div onclick="window.handleFav(event, 'p4')" id="fav-toggle-p4"
+                                                class="fav-toggle inactive">
                                                 <span class="fav-dot"></span>
                                             </div>
                                         </div>
                                     </div>
-                                    <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest font-bold">Abrir</p>
+                                    <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest font-bold">
+                                        Abrir</p>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <h3 class="font-bold text-xl mb-4 uppercase">Manejo de Crise</h3>
-                                <p class="text-xs mb-4 text-blue-100 text-left leading-relaxed font-medium">Documentos de Referência:</p>
+                                <p class="text-xs mb-4 text-blue-100 text-left leading-relaxed font-medium">Documentos
+                                    de Referência:</p>
                                 <div class="flex flex-col gap-2 w-full">
-                                    <a href="#" onclick="event.stopPropagation(); window.showToast('Manual em carregamento...')" class="bg-white text-blue-900 px-4 py-2 rounded-xl font-bold text-[10px] uppercase shadow-md hover:bg-slate-100 transition text-center">Manual de Prevenção (MS)</a>
-                                    <a href="#" onclick="event.stopPropagation(); window.showToast('Escala em carregamento...')" class="bg-white text-blue-900 px-4 py-2 rounded-xl font-bold text-[10px] uppercase shadow-md hover:bg-slate-100 transition text-center">Escala de Risco</a>
-                                    <a href="#" onclick="event.stopPropagation(); window.showToast('Fluxo em carregamento...')" class="bg-white text-blue-900 px-4 py-2 rounded-xl font-bold text-[10px] uppercase shadow-md hover:bg-slate-100 transition text-center">Fluxo Encaminhamento</a>
+                                    <a href="#"
+                                        onclick="event.stopPropagation(); window.showToast('Manual em carregamento...')"
+                                        class="bg-white text-blue-900 px-4 py-2 rounded-xl font-bold text-[10px] uppercase shadow-md hover:bg-slate-100 transition text-center">Manual
+                                        de Prevenção (MS)</a>
+                                    <a href="#"
+                                        onclick="event.stopPropagation(); window.showToast('Escala em carregamento...')"
+                                        class="bg-white text-blue-900 px-4 py-2 rounded-xl font-bold text-[10px] uppercase shadow-md hover:bg-slate-100 transition text-center">Escala
+                                        de Risco</a>
+                                    <a href="#"
+                                        onclick="event.stopPropagation(); window.showToast('Fluxo em carregamento...')"
+                                        class="bg-white text-blue-900 px-4 py-2 rounded-xl font-bold text-[10px] uppercase shadow-md hover:bg-slate-100 transition text-center">Fluxo
+                                        Encaminhamento</a>
                                 </div>
                             </div>
                         </div>
@@ -243,40 +672,57 @@
                 </div>
 
                 <!-- Card 4: Custódia (Construção) -->
-                <div class="protocol-card" data-category="pericia" data-id="p3" data-date="2026-03-03" data-construction="true">
+                <div class="protocol-card" data-category="pericia" data-id="p3" data-date="2026-03-03"
+                    data-construction="true">
                     <div class="flip-card" onclick="window.handleCardClick(this)">
                         <div class="flip-card-inner">
                             <div class="flip-card-front">
                                 <div class="construction-ribbon">Em Construção</div>
                                 <div class="flex justify-between items-start w-full">
-                                    <span class="bg-purple-100 text-purple-700 text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-wider">Perícia</span>
+                                    <span
+                                        class="bg-purple-100 text-purple-700 text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-wider">Perícia</span>
                                     <span class="text-xl text-emerald-500 font-bold">🔓</span>
                                 </div>
                                 <div class="text-left w-full mt-6">
-                                    <h3 class="text-2xl font-black text-slate-800 leading-tight font-bold">Cadeia de Custódia</h3>
-                                    <p class="text-slate-500 text-sm mt-3 leading-relaxed font-medium">Preservação de vestígios e integridade jurídica hospitalar.</p>
+                                    <h3 class="text-2xl font-black text-slate-800 leading-tight font-bold">Cadeia de
+                                        Custódia</h3>
+                                    <p class="text-slate-500 text-sm mt-3 leading-relaxed font-medium">Preservação de
+                                        vestígios e integridade jurídica hospitalar.</p>
                                 </div>
-                                <div class="w-full border-t border-slate-50 pt-6 mt-6 flex justify-between items-center">
+                                <div
+                                    class="w-full border-t border-slate-50 pt-6 mt-6 flex justify-between items-center">
                                     <div class="flex gap-4 items-center">
-                                        <button onclick="window.handleVote(event, 'p3')" class="flex items-center gap-2 text-slate-400 hover:text-red-500 transition-all duration-300">
-                                            <svg class="w-6 h-6 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                                        <button onclick="window.handleVote(event, 'p3')"
+                                            class="flex items-center gap-2 text-slate-400 hover:text-red-500 transition-all duration-300">
+                                            <svg class="w-6 h-6 transition-all" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
+                                                </path>
+                                            </svg>
                                             <span class="text-xs font-black count-display" id="likes-p3">5</span>
                                         </button>
                                         <div class="flex items-center gap-2 ml-3">
-                                            <span class="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Fav</span>
-                                            <div onclick="window.handleFav(event, 'p3')" id="fav-toggle-p3" class="fav-toggle inactive">
+                                            <span
+                                                class="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Fav</span>
+                                            <div onclick="window.handleFav(event, 'p3')" id="fav-toggle-p3"
+                                                class="fav-toggle inactive">
                                                 <span class="fav-dot"></span>
                                             </div>
                                         </div>
                                     </div>
-                                    <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest font-bold">Abrir</p>
+                                    <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest font-bold">
+                                        Abrir</p>
                                 </div>
                             </div>
                             <div class="flip-card-back">
                                 <div class="construction-ribbon">Em Construção</div>
                                 <h3 class="font-bold text-xl mb-6 uppercase">Custódia</h3>
-                                <p class="text-sm mb-8 text-blue-100 text-left leading-relaxed font-medium">Manual em fase final de validação pela Equipe Técnica.</p>
-                                <button disabled class="bg-slate-400 text-slate-200 px-8 py-3 rounded-2xl font-black text-xs uppercase cursor-not-allowed">Em Breve</button>
+                                <p class="text-sm mb-8 text-blue-100 text-left leading-relaxed font-medium">Manual em
+                                    fase final de validação pela Equipe Técnica.</p>
+                                <button disabled
+                                    class="bg-slate-400 text-slate-200 px-8 py-3 rounded-2xl font-black text-xs uppercase cursor-not-allowed">Em
+                                    Breve</button>
                             </div>
                         </div>
                     </div>
@@ -294,8 +740,13 @@
             </div>
             <div class="grid md:grid-cols-3 gap-8" id="testimonials-grid"></div>
             <div class="mt-16 text-center">
-                <button onclick="window.renderRandomTestimonials()" class="bg-blue-900 hover:bg-black text-white px-10 py-4 rounded-2xl font-black transition-all flex items-center gap-3 mx-auto uppercase text-xs tracking-widest shadow-2xl active:scale-95">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                <button onclick="window.renderRandomTestimonials()"
+                    class="bg-blue-900 hover:bg-black text-white px-10 py-4 rounded-2xl font-black transition-all flex items-center gap-3 mx-auto uppercase text-xs tracking-widest shadow-2xl active:scale-95">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                        </path>
+                    </svg>
                     Gerar Novos Depoimentos
                 </button>
             </div>
@@ -308,18 +759,26 @@
             <div class="badge-authority-container">
                 <div class="badge-glow"></div>
                 <!-- LOCAL PARA TROCAR A IMAGEM DO DISTINTIVO -->
-                <img src="logoviolencia.png" alt="Distintivo Gestão da Violência" class="w-full h-full object-cover rounded-full shadow-2xl z-10 border-4 border-white">
+                <img src="badge_gestao_violencia.jpg"
+                    alt="Time de Gestão da Violência - Atendimentos em Serviços de Saúde"
+                    class="w-full h-full object-cover rounded-full shadow-2xl z-10 border-4 border-white">
             </div>
             <div class="text-center md:text-left">
                 <h2 class="text-4xl font-black text-slate-900 mb-6 tracking-tighter">Equipe Técnica</h2>
                 <p class="text-2xl font-bold mb-4 text-blue-600 leading-none">Dr. Guilherme Camara</p>
                 <p class="text-slate-600 text-lg leading-relaxed max-w-2xl mb-8 font-medium italic">
-                    Médico Perito e Professor com 30 anos de prática em unidades de urgência e emergência. Projeto de intervenção de campo do curso de medicina disciplina de urgência e emergência para alunos de graduação.
+                    Médico Perito e Professor com 30 anos de prática em unidades de urgência e emergência. Projeto de
+                    intervenção de campo do curso de medicina disciplina de urgência e emergência para alunos de
+                    graduação.
                 </p>
                 <div class="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm transition-all hover:shadow-md">
-                    <p class="text-[10px] font-black text-slate-500 uppercase mb-2 tracking-widest leading-none">Atribuição Institucional</p>
+                    <p class="text-[10px] font-black text-slate-500 uppercase mb-2 tracking-widest leading-none">
+                        Atribuição Institucional</p>
                     <p class="text-slate-700 font-medium text-sm leading-relaxed mt-1">
-                        Este portal é oferecido pelo <a href="https://periciascamara.editoraviva.art.br/veridicusinteligencia" target="_blank" class="text-blue-600 hover:underline font-bold transition">Veridicus I.A</a> — plataforma especializada na apuração da verdade.
+                        Este portal é oferecido pelo <a
+                            href="https://periciascamara.editoraviva.art.br/veridicusinteligencia" target="_blank"
+                            class="text-blue-600 hover:underline font-bold transition">Veridicus I.A</a> — plataforma
+                        especializada na apuração da verdade.
                     </p>
                 </div>
             </div>
@@ -332,12 +791,18 @@
             <div class="bg-slate-50 p-10 rounded-[2.5rem] shadow-xl border border-slate-200">
                 <h2 class="text-3xl font-black text-slate-900 mb-4 tracking-tighter">Sugerir Protocolos</h2>
                 <p class="text-slate-600 mb-8 font-medium leading-relaxed">
-                    Contribua para a expansão da curadoria da nossa equipa técnica sugerindo novos temas.
+                    Contribua para a expansão da curadoria da nossa equipe técnica sugerindo novos temas.
                 </p>
                 <div class="flex flex-col gap-4">
-                    <textarea id="suggestion-text" rows="4" class="w-full p-5 border-2 border-slate-100 rounded-2xl outline-none focus:border-blue-900 transition-all shadow-inner font-medium" placeholder="Que protocolo técnico gostaria de ver aqui?"></textarea>
-                    <button onclick="window.sendWhatsAppSuggestion()" class="bg-emerald-600 text-white py-4 rounded-2xl font-black hover:bg-emerald-700 transition-all shadow-lg active:scale-95 uppercase tracking-wider flex items-center justify-center gap-3">
-                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.246 2.248 3.484 5.232 3.483 8.413-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.5-5.688-1.448l-6.308 1.656zm6.29-4.139c1.52.907 3.013 1.362 4.6 1.363 5.398 0 9.786-4.392 9.788-9.789 0-2.614-1.02-5.074-2.871-6.928-1.851-1.854-4.312-2.87-6.921-2.87-5.398 0-9.786 4.391-9.789 9.789 0 1.761.473 3.33 1.371 4.757l-1.092 3.985 4.093-1.073zm12.193-6.311c-.133-.223-.489-.356-.845-.533-.356-.178-2.106-1.039-2.434-1.15-.328-.111-.567-.167-.801.178-.234.344-.912 1.15-1.112 1.372-.2.222-.4.244-.756.066-.356-.178-1.503-.554-2.862-1.166-.334-.15-.588-.249-.788-.313-.334-.106-.638-.091-.878-.053-.269.042-.845.344-1.023.689-.178.344-.178.638-.122.689.056.051.21.083.434.195.222.111 1.312.646 1.512.718.2.072.334.108.467.311.134.202.134.588.067.791-.067.202-.267.356-.467.58-.2.223-.423.498-.603.687-.183.189-.373.395-.162.755.21.36.933 1.54 2.003 2.493 1.38 1.229 2.545 1.611 2.912 1.782.367.171.583.143.793-.105.21-.247.9-1.047 1.142-1.403.242-.356.484-.3.811-.178.328.122 2.1.989 2.462 1.166.362.178.604.267.693.423.089.156.089.89-.223 1.167z"/></svg>
+                    <textarea id="suggestion-text" rows="4"
+                        class="w-full p-5 border-2 border-slate-100 rounded-2xl outline-none focus:border-blue-900 transition-all shadow-inner font-medium"
+                        placeholder="Que protocolo técnico gostaria de ver aqui?"></textarea>
+                    <button onclick="window.sendWhatsAppSuggestion()"
+                        class="bg-emerald-600 text-white py-4 rounded-2xl font-black hover:bg-emerald-700 transition-all shadow-lg active:scale-95 uppercase tracking-wider flex items-center justify-center gap-3">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.246 2.248 3.484 5.232 3.483 8.413-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.5-5.688-1.448l-6.308 1.656zm6.29-4.139c1.52.907 3.013 1.362 4.6 1.363 5.398 0 9.786-4.392 9.788-9.789 0-2.614-1.02-5.074-2.871-6.928-1.851-1.854-4.312-2.87-6.921-2.87-5.398 0-9.786 4.391-9.789 9.789 0 1.761.473 3.33 1.371 4.757l-1.092 3.985 4.093-1.073zm12.193-6.311c-.133-.223-.489-.356-.845-.533-.356-.178-2.106-1.039-2.434-1.15-.328-.111-.567-.167-.801.178-.234.344-.912 1.15-1.112 1.372-.2.222-.4.244-.756.066-.356-.178-1.503-.554-2.862-1.166-.334-.15-.588-.249-.788-.313-.334-.106-.638-.091-.878-.053-.269.042-.845.344-1.023.689-.178.344-.178.638-.122.689.056.051.21.083.434.195.222.111 1.312.646 1.512.718.2.072.334.108.467.311.134.202.134.588.067.791-.067.202-.267.356-.467.58-.2.223-.423.498-.603.687-.183.189-.373.395-.162.755.21.36.933 1.54 2.003 2.493 1.38 1.229 2.545 1.611 2.912 1.782.367.171.583.143.793-.105.21-.247.9-1.047 1.142-1.403.242-.356.484-.3.811-.178.328.122 2.1.989 2.462 1.166.362.178.604.267.693.423.089.156.089.89-.223 1.167z" />
+                        </svg>
                         Enviar Sugestão via WhatsApp
                     </button>
                 </div>
@@ -347,119 +812,16 @@
 
     <!-- Footer -->
     <footer class="bg-slate-950 text-white py-12 px-6 text-center">
-        <p class="text-slate-500 text-[10px] uppercase font-medium tracking-widest">Veridicus I.A v4.6.0 Standalone | Time Os Caras da TI</p>
+        <p class="text-slate-500 text-[10px] uppercase font-medium tracking-widest">Veridicus I.A v4.6.0 Standalone |
+            Time Os Caras da TI</p>
     </footer>
 
     <!-- Toast UI -->
-    <div id="toast" class="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-blue-900 text-white px-8 py-4 rounded-2xl shadow-2xl z-[1100] hidden font-bold text-sm uppercase">Mensagem</div>
+    <div id="toast"
+        class="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-blue-900 text-white px-8 py-4 rounded-2xl shadow-2xl z-[1100] hidden font-bold text-sm uppercase">
+        Mensagem</div>
 
-    <script>
-        const testimonialPool = [
-            { text: "Decisões seguras no plantão são cruciais. Os protocolos do Veridicus são impecáveis.", name: "Dra. Ana Silva", role: "Médica Emergencista", initial: "AS" },
-            { text: "Reduzimos as falhas na notificação compulsória com o guia técnico do portal.", name: "Enf. Carlos Medeiros", role: "Gestor Hospitalar", initial: "CM" },
-            { text: "Rigor pericial que protege o profissional na ponta. Recomendo fortemente.", name: "Dra. Paula Rocha", role: "Perita Legista", initial: "PR" },
-            { text: "Segurança jurídica real para situações críticas de acolhimento à vítima.", name: "Dr. Fábio Souza", role: "Diretor Clínico", initial: "FS" },
-            { text: "Material técnico direto ao ponto. Essencial para o plantão de urgência.", name: "Enf. Marcos Lima", role: "Coord. de Emergência", initial: "ML" }
-        ];
-
-        let localFavorites = JSON.parse(localStorage.getItem('veridicus_favs')) || [];
-        let localLikes = JSON.parse(localStorage.getItem('veridicus_likes')) || {};
-
-        window.handleCardClick = function(card) { card.classList.toggle('flipped'); };
-
-        window.handleVote = function(e, id) {
-            e.stopPropagation();
-            const span = document.getElementById(`likes-${id}`);
-            const icon = e.currentTarget.querySelector('svg');
-            icon.classList.add('heart-active');
-            setTimeout(() => icon.classList.remove('heart-active'), 400);
-            let current = parseInt(span.innerText) || 0;
-            span.innerText = current + 1;
-            localLikes[id] = current + 1;
-            localStorage.setItem('veridicus_likes', JSON.stringify(localLikes));
-            window.showToast("Relevância Registada!");
-        };
-
-        window.handleFav = function(e, id) {
-            e.stopPropagation();
-            const toggle = document.getElementById(`fav-toggle-${id}`);
-            const index = localFavorites.indexOf(id);
-            if (index > -1) {
-                localFavorites.splice(index, 1);
-                toggle.classList.replace('active', 'inactive');
-                window.showToast("Removido dos favoritos.");
-            } else {
-                localFavorites.push(id);
-                toggle.classList.replace('inactive', 'active');
-                window.showToast("Adicionado aos favoritos!");
-            }
-            localStorage.setItem('veridicus_favs', JSON.stringify(localFavorites));
-        };
-
-        window.filterCards = function(criteria, btn) {
-            document.querySelectorAll('.filter-btn').forEach(b => {
-                b.classList.remove('active');
-                b.classList.add('text-slate-500', 'bg-white', 'border-slate-200');
-            });
-            btn.classList.add('active');
-            btn.classList.remove('text-slate-500', 'bg-white', 'border-slate-200');
-            const cards = Array.from(document.querySelectorAll('.protocol-card'));
-            cards.forEach(card => {
-                const id = card.dataset.id;
-                const cat = card.dataset.category;
-                const isFav = localFavorites.includes(id);
-                card.style.display = "none";
-                if (criteria === 'all' || criteria === 'recent') card.style.display = "block";
-                else if (criteria === 'favs' && isFav) card.style.display = "block";
-                else if (criteria === cat) card.style.display = "block";
-            });
-        };
-
-        window.renderRandomTestimonials = function() {
-            const grid = document.getElementById('testimonials-grid');
-            if (!grid) return;
-            grid.innerHTML = "";
-            const shuffled = [...testimonialPool].sort(() => 0.5 - Math.random());
-            shuffled.slice(0, 3).forEach((t, i) => {
-                const card = document.createElement('div');
-                card.className = 'testimonial-card opacity-0 translate-y-4';
-                card.innerHTML = `<p class="text-slate-600 italic mb-8 font-medium">"${t.text}"</p><div class="flex items-center gap-4"><div class="w-12 h-12 bg-blue-900 rounded-2xl flex items-center justify-center text-white font-bold shadow-lg">${t.initial}</div><div><h4 class="font-bold text-slate-900 leading-none mb-1">${t.name}</h4><p class="text-[10px] text-slate-400 uppercase font-black tracking-tighter">${t.role}</p></div></div>`;
-                grid.appendChild(card);
-                setTimeout(() => card.classList.remove('opacity-0', 'translate-y-4'), i * 100);
-            });
-        };
-
-        window.sendWhatsAppSuggestion = function() {
-            const text = document.getElementById('suggestion-text').value;
-            if (!text) return window.showToast("Escreva a sua sugestão primeiro.");
-            const phoneNumber = "5531999572799";
-            const message = encodeURIComponent(`Olá Equipe Técnica Veridicus!\n\nTenho uma sugestão de tema/protocolo para a Rede:\n\n"${text}"`);
-            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
-            window.open(whatsappUrl, '_blank');
-            document.getElementById('suggestion-text').value = "";
-            window.showToast("A abrir o WhatsApp...");
-        };
-
-        window.trackDownload = function(e) { e.stopPropagation(); window.showToast("Protocolo solicitado."); };
-
-        window.showToast = function(m) { 
-            const t = document.getElementById("toast"); 
-            t.innerText = m; t.classList.remove("hidden"); 
-            setTimeout(() => t.classList.add("hidden"), 3000); 
-        };
-
-        function initApp() {
-            window.renderRandomTestimonials();
-            localFavorites.forEach(id => {
-                const toggle = document.getElementById(`fav-toggle-${id}`);
-                if (toggle) toggle.classList.replace('inactive', 'active');
-            });
-            Object.keys(localLikes).forEach(id => {
-                const span = document.getElementById(`likes-${id}`);
-                if (span) span.innerText = localLikes[id];
-            });
-        }
-        document.addEventListener('DOMContentLoaded', initApp);
-    </script>
+    <script src="app.js"></script>
 </body>
+
 </html>
