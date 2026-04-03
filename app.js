@@ -153,7 +153,6 @@ window.doLogout = function () {
     document.getElementById('login-bar').classList.remove('hidden');
     resetUI();
     window.showToast('Sessão encerrada.');
-    showModal(); // Força o usuário a logar novamente ou ver a tela bloqueada
 };
 
 // ---- Load User Data from Supabase ----
@@ -184,6 +183,11 @@ function updateAllUI() {
             if (userFavorites.includes(id)) toggle.classList.replace('inactive', 'active');
             else toggle.classList.replace('active', 'inactive');
         }
+        const padlock = document.getElementById(`padlock-${id}`);
+        if (padlock) {
+            padlock.textContent = '🔓';
+            padlock.classList.replace('text-slate-400', 'text-emerald-500');
+        }
     });
 }
 
@@ -191,6 +195,11 @@ function resetUI() {
     Object.keys(cardNames).forEach(id => {
         const toggle = document.getElementById(`fav-toggle-${id}`);
         if (toggle) toggle.classList.replace('active', 'inactive');
+        const padlock = document.getElementById(`padlock-${id}`);
+        if (padlock) {
+            padlock.textContent = '🔒';
+            padlock.classList.replace('text-emerald-500', 'text-slate-400');
+        }
     });
 }
 
@@ -228,6 +237,10 @@ window.handleFav = async function (e, id) {
 
 // ---- Card Flip + Visit Tracking ----
 window.handleCardClick = async function (card) {
+    if (!currentUser) {
+        window.showLoginModal();
+        return;
+    }
     card.classList.toggle('flipped');
     if (card.classList.contains('flipped')) {
         const cardEl = card.closest('.protocol-card');
@@ -342,11 +355,9 @@ async function initApp() {
             showUserBar(data);
             await loadUserData();
         } else {
-            showModal();
             document.getElementById('login-bar').classList.remove('hidden');
         }
     } else {
-        showModal();
         document.getElementById('login-bar').classList.remove('hidden');
     }
 
