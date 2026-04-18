@@ -89,21 +89,32 @@ window.doLogin = async function () {
         return;
     }
     errEl.classList.add('hidden');
-    // Check if user exists
-    let { data: existing } = await sb.from('users').select('*').eq('cpf', raw).maybeSingle();
-    if (existing) {
-        // Existing user — login directly
-        currentUser = existing;
-        sessionStorage.setItem('veridicus_uid', existing.id);
-        sessionStorage.setItem('veridicus_cpf', raw);
-        closeModal();
-        showUserBar(existing);
-        await loadUserData();
-        window.showToast(`Bem-vindo(a), ${existing.nome ? existing.nome.split(' ')[0] : 'usuário'}!`);
-    } else {
-        // New user — show registration form
-        pendingCPF = raw;
-        showRegisterStep();
+    // Disable button to prevent double-click
+    const loginBtn = document.querySelector('#modal-step-cpf button');
+    if (loginBtn) { loginBtn.disabled = true; loginBtn.textContent = 'Verificando...'; }
+    try {
+        // Check if user exists
+        let { data: existing, error } = await sb.from('users').select('*').eq('cpf', raw).maybeSingle();
+        if (error) throw error;
+        if (existing) {
+            // Existing user — login directly
+            currentUser = existing;
+            sessionStorage.setItem('veridicus_uid', existing.id);
+            sessionStorage.setItem('veridicus_cpf', raw);
+            closeModal();
+            showUserBar(existing);
+            await loadUserData();
+            window.showToast(`Bem-vindo(a), ${existing.nome ? existing.nome.split(' ')[0] : 'usuário'}!`);
+        } else {
+            // New user — show registration form
+            pendingCPF = raw;
+            showRegisterStep();
+        }
+    } catch (err) {
+        console.error('Erro ao verificar CPF:', err);
+        window.showToast('Servidor indisponível. Verifique sua conexão e tente novamente.');
+    } finally {
+        if (loginBtn) { loginBtn.disabled = false; loginBtn.textContent = 'CONTINUAR'; }
     }
 };
 
@@ -121,27 +132,44 @@ window.doRegister = async function () {
     }
     errEl.classList.add('hidden');
 
-    const { data: newUser, error } = await sb.from('users').insert({
-        cpf: pendingCPF,
-        nome: nome,
-        telefone: telefone,
-        email: email,
-        profissao: profissao
-    }).select().single();
+    // Disable button to prevent double-click
+    const regBtn = document.querySelector('#modal-step-register button');
+    if (regBtn) { regBtn.disabled = true; regBtn.textContent = 'Cadastrando...'; }
 
-    if (error) {
-        window.showToast('Erro ao cadastrar. Tente novamente.');
-        console.error(error);
-        return;
+    try {
+        const { data: newUser, error } = await sb.from('users').insert({
+            cpf: pendingCPF,
+            nome: nome,
+            telefone: telefone,
+            email: email,
+            profissao: profissao
+        }).select().single();
+
+        if (error) {
+            console.error('Erro Supabase:', error);
+            if (error.code === '23505') {
+                window.showToast('Este CPF já está cadastrado. Tente fazer login.');
+            } else if (error.message && error.message.includes('fetch')) {
+                window.showToast('Servidor indisponível. Verifique sua conexão.');
+            } else {
+                window.showToast('Erro ao cadastrar: ' + (error.message || 'Tente novamente.'));
+            }
+            return;
+        }
+
+        currentUser = newUser;
+        sessionStorage.setItem('veridicus_uid', newUser.id);
+        sessionStorage.setItem('veridicus_cpf', pendingCPF);
+        closeModal();
+        showUserBar(newUser);
+        await loadUserData();
+        window.showToast(`Cadastro realizado! Bem-vindo(a), ${nome.split(' ')[0]}!`);
+    } catch (err) {
+        console.error('Erro de rede:', err);
+        window.showToast('Servidor indisponível. Verifique sua conexão e tente novamente.');
+    } finally {
+        if (regBtn) { regBtn.disabled = false; regBtn.textContent = 'CADASTRAR'; }
     }
-
-    currentUser = newUser;
-    sessionStorage.setItem('veridicus_uid', newUser.id);
-    sessionStorage.setItem('veridicus_cpf', pendingCPF);
-    closeModal();
-    showUserBar(newUser);
-    await loadUserData();
-    window.showToast(`Cadastro realizado! Bem-vindo(a), ${nome.split(' ')[0]}!`);
 };
 
 window.doLogout = function () {
