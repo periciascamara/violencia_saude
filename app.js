@@ -11,7 +11,7 @@ let userFavorites = [];
 let pendingCPF = '';
 
 // Card name map
-const cardNames = { p1: 'Profilaxia PEP', p2: 'Ficha SINAN', p3: 'Cadeia de Custódia', p4: 'Atendimento Suicídio' };
+const cardNames = { p1: 'Profilaxia PEP', p2: 'Ficha SINAN', p3: 'Cadeia de Custódia', p4: 'Atendimento Suicídio', p5: 'Livro sobre Gestão da Violência', p6: 'Curso Gestão da Violência' };
 
 // ---- CPF Mask ----
 function maskCPF(v) {
